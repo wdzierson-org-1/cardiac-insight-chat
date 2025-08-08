@@ -18,7 +18,7 @@ export const DashboardLayout = () => {
         </div>
         <div className="col-span-11">
           <Header />
-          <main className="px-4 md:px-6 py-6">
+          <main className="px-4 md:px-6 py-6 bg-subtle-grid">
             <section className="grid grid-cols-12 gap-4">
               <PatientSummaryCard />
               <MedicalHistoryCard />
