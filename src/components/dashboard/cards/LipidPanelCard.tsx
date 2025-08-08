@@ -14,8 +14,8 @@ const Row = ({ label, value, normal, dataKey }: { label: string; value: number; 
 export const LipidPanelCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
-      <CardHeader>
-        <CardTitle>Lipid Panel</CardTitle>
+      <CardHeader className="rounded-t-lg bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
+        <CardTitle className="text-lg">Lipid Panel</CardTitle>
       </CardHeader>
       <CardContent>
         <Row label="Cholesterol" value={60} normal="100-199 mg/dL" dataKey="lipid:chol" />

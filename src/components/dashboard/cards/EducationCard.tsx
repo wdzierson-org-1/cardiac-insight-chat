@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 export const EducationCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
-      <CardHeader>
-        <CardTitle>Patient Education</CardTitle>
+      <CardHeader className="rounded-t-lg bg-[hsl(var(--panel-teal))] text-[hsl(var(--panel-foreground))]">
+        <CardTitle className="text-lg">Patient Education</CardTitle>
       </CardHeader>
       <CardContent className="text-sm">
         <ul className="space-y-2">

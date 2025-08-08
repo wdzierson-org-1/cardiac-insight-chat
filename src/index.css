@@ -36,7 +36,7 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -63,6 +63,13 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-2)));
     --shadow-soft: 0 10px 30px -12px hsl(var(--brand)/0.25);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Panel header colors */
+    --panel-blue: 210 80% 40%;
+    --panel-teal: 173 60% 36%;
+    --panel-green: 145 45% 35%;
+    --panel-gold: 42 85% 50%;
+    --panel-foreground: 210 40% 98%;
   }
 
   .dark {

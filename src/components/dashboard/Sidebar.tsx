@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 const NavIcon = ({ icon: Icon, active = false, label }: { icon: any; active?: boolean; label: string }) => (
   <button
     aria-label={label}
-    className={cn(
-      "flex items-center justify-center h-12 w-12 rounded-xl border transition-transform",
-      "border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground",
-      active && "bg-sidebar-accent"
-    )}
+      className={cn(
+        "flex items-center justify-center h-12 w-12 rounded-xl border shadow-sm transition-colors",
+        "border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground hover:ring-1 hover:ring-sidebar-ring",
+        active && "bg-sidebar-accent ring-1 ring-sidebar-ring"
+      )}
   >
     <Icon className="h-5 w-5" />
   </button>
@@ -18,7 +18,7 @@ export const Sidebar = () => {
   return (
     <aside className="hidden md:flex md:flex-col gap-3 p-3 w-16 sticky top-0 h-screen border-r bg-sidebar text-sidebar-foreground">
       <div className="flex flex-col items-center gap-3">
-        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold">
+        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-[hsl(var(--brand))] to-[hsl(var(--brand-2))] shadow flex items-center justify-center text-primary-foreground font-bold">
           PCP
         </div>
       </div>

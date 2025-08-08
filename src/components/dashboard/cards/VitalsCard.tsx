@@ -14,8 +14,8 @@ const VRow = ({ label, value, normal, dataKey }: { label: string; value: number;
 export const VitalsCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
-      <CardHeader>
-        <CardTitle>Vitals</CardTitle>
+      <CardHeader className="rounded-t-lg bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]">
+        <CardTitle className="text-lg">Vitals</CardTitle>
       </CardHeader>
       <CardContent>
         <VRow label="BMI" value={72} normal="18.5 - 24.9" dataKey="vital:bmi" />
