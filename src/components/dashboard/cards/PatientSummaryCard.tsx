@@ -12,8 +12,8 @@ export const PatientSummaryCard = () => {
         <div className="flex items-center gap-4">
           <img src={patientAvatar} alt="Warren McGinnis patient avatar" className="h-16 w-16 rounded-full object-cover" loading="lazy" />
           <div>
-            <div className="font-semibold">Warren McGinnis</div>
-            <div className="text-sm text-muted-foreground">Age 72 • Male</div>
+            <div className="font-semibold" data-field="patient:name">Warren McGinnis</div>
+            <div className="text-sm text-muted-foreground" data-field="patient:demographics" data-value="Age 72 • Male">Age 72 • Male</div>
             <a className="text-sm text-primary underline" href="#">HealthSAFE →</a>
           </div>
         </div>
@@ -25,20 +25,20 @@ export const PatientSummaryCard = () => {
             <div>
               <div className="font-medium mb-1">Presenting concerns</div>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>Lower extremity swelling</li>
-                <li>Weight gain of 10 lbs in two weeks</li>
-                <li>Shortness of breath</li>
-                <li>Difficulty lying flat at night</li>
+                <li data-field="concern:edema">Lower extremity swelling</li>
+                <li data-field="concern:weight_gain">Weight gain of 10 lbs in two weeks</li>
+                <li data-field="concern:sob">Shortness of breath</li>
+                <li data-field="concern:orthopnea">Difficulty lying flat at night</li>
               </ul>
             </div>
             <div>
               <div className="font-medium mb-1">History</div>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li><a className="underline" href="#">Coronary Artery Disease</a></li>
-                <li><a className="underline" href="#">Hypertension</a></li>
-                <li><a className="underline" href="#">Hyperlipidemia</a></li>
-                <li><a className="underline" href="#">Diabetes</a></li>
-                <li><a className="underline" href="#">Prior smoker</a></li>
+                <li data-field="hx:cad"><a className="underline" href="#">Coronary Artery Disease</a></li>
+                <li data-field="hx:htn"><a className="underline" href="#">Hypertension</a></li>
+                <li data-field="hx:hyperlipidemia"><a className="underline" href="#">Hyperlipidemia</a></li>
+                <li data-field="hx:dm"><a className="underline" href="#">Diabetes</a></li>
+                <li data-field="hx:smoker"><a className="underline" href="#">Prior smoker</a></li>
               </ul>
             </div>
           </div>

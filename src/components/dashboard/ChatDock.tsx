@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Mic, Send, Brain, Sparkles } from "lucide-react";
+import { useAssistantUI } from "./assistant-ui-context";
 
 interface Message { role: "user" | "assistant"; content: string }
 
@@ -11,7 +12,14 @@ function collectScreenContext() {
   const titles = Array.from(document.querySelectorAll("[data-card-title]"))
     .map((el) => (el.textContent || "").trim())
     .filter(Boolean);
-  return { visibleCards: titles };
+  const fields: Record<string, string> = {};
+  Array.from(document.querySelectorAll<HTMLElement>("[data-field]"))
+    .forEach((el) => {
+      const key = el.dataset.field || "";
+      const val = el.dataset.value || (el.textContent || "").trim();
+      if (key) fields[key] = val;
+    });
+  return { visibleCards: titles, fields };
 }
 
 function mockAssistant(userText: string, ctx: ReturnType<typeof collectScreenContext>): string {
@@ -28,22 +36,28 @@ export const ChatDock = () => {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { showTrendingVitals } = useAssistantUI();
 
   useEffect(() => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  const onSend = async () => {
-    if (!input.trim()) return;
-    const user = { role: "user" as const, content: input.trim() };
-    setMessages((m) => [...m, user]);
+const onSend = async () => {
+  if (!input.trim()) return;
+  const user = { role: "user" as const, content: input.trim() };
+  setMessages((m) => [...m, user]);
 
-    // Placeholder until Supabase + OpenAI proxy is connected
-    const ctx = collectScreenContext();
-    const reply = mockAssistant(user.content, ctx);
-    setMessages((m) => [...m, { role: "assistant", content: reply }]);
-    setInput("");
-  };
+  const ctx = collectScreenContext();
+  // Simple action detection until server AI is connected
+  if (/trending\s+vitals/i.test(user.content)) {
+    showTrendingVitals();
+  }
+
+  // Placeholder until Supabase + OpenAI proxy is connected
+  const reply = mockAssistant(user.content, ctx);
+  setMessages((m) => [...m, { role: "assistant", content: reply }]);
+  setInput("");
+};
 
   const startVoice = async () => {
     const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -118,12 +132,20 @@ export const ChatDock = () => {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
-              <button
-                onClick={() => setInput("Explain the on-screen data for care planning.")}
-                className="mt-2 text-xs text-primary underline inline-flex items-center gap-1"
-              >
-                <Sparkles className="h-3 w-3" /> Use screen context
-              </button>
+<div className="mt-2 flex items-center gap-3">
+  <button
+    onClick={() => setInput("Explain the on-screen data for care planning.")}
+    className="text-xs text-primary underline inline-flex items-center gap-1"
+  >
+    <Sparkles className="h-3 w-3" /> Explain this screen
+  </button>
+  <button
+    onClick={() => setInput("Show trending vitals for the last 6 months")}
+    className="text-xs text-primary underline"
+  >
+    Show trending vitals
+  </button>
+</div>
             </div>
           </>
         )}
