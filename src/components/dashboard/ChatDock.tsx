@@ -1,0 +1,133 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Mic, Send, Brain, Sparkles } from "lucide-react";
+
+interface Message { role: "user" | "assistant"; content: string }
+
+function collectScreenContext() {
+  const titles = Array.from(document.querySelectorAll("[data-card-title]"))
+    .map((el) => (el.textContent || "").trim())
+    .filter(Boolean);
+  return { visibleCards: titles };
+}
+
+function mockAssistant(userText: string, ctx: ReturnType<typeof collectScreenContext>): string {
+  const focus = ctx.visibleCards.join(", ");
+  return `I see tiles for: ${focus}. Given early heart failure risk, prioritize assessing fluid status, BP trends, and lipids. Recommend daily weights, low-sodium diet, uptitrate guideline-directed therapy, and schedule echo if not recent. You asked: "${userText}"`;
+}
+
+export const ChatDock = () => {
+  const [open, setOpen] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([
+    { role: "assistant", content: "Hi! I can summarize on-screen data, answer questions, and pull additional records. Connect Supabase to enable real AI." },
+  ]);
+  const [input, setInput] = useState("");
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages]);
+
+  const onSend = async () => {
+    if (!input.trim()) return;
+    const user = { role: "user" as const, content: input.trim() };
+    setMessages((m) => [...m, user]);
+
+    // Placeholder until Supabase + OpenAI proxy is connected
+    const ctx = collectScreenContext();
+    const reply = mockAssistant(user.content, ctx);
+    setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    setInput("");
+  };
+
+  const startVoice = async () => {
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      alert("Speech Recognition not supported in this browser.");
+      return;
+    }
+    const rec: any = new SR();
+    recognitionRef.current = rec;
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.onresult = (ev: any) => {
+      const t = ev.results[0][0].transcript;
+      setInput((p) => (p ? p + " " + t : t));
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setListening(true);
+      rec.start();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const stopVoice = () => {
+    recognitionRef.current?.stop();
+    setListening(false);
+  };
+
+  return (
+    <div className={cn("fixed left-4 bottom-4 z-30")}
+      aria-live="polite" aria-label="Clinical Assistant Dock">
+      <div className={cn(
+        "w-[350px] sm:w-[380px] rounded-2xl border bg-popover shadow-lg transition-all",
+        open ? "h-[460px]" : "h-14",
+      )}>
+        <div className="flex items-center justify-between px-3 py-2 border-b">
+          <div className="flex items-center gap-2">
+            <Brain className="h-5 w-5 text-primary" />
+            <span className="font-medium">Clinical Assistant</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-label="Toggle chat">
+            {open ? "Minimize" : "Open"}
+          </Button>
+        </div>
+
+        {open && (
+          <>
+            <div ref={containerRef} className="h-[340px] overflow-y-auto p-3 space-y-3">
+              <div className="rounded-lg bg-secondary p-2 text-xs text-secondary-foreground">
+                Connect Supabase to enable secure OpenAI access and RAG. In this demo, responses are simulated.
+              </div>
+              {messages.map((m, i) => (
+                <Card key={i} className={cn("p-2 text-sm", m.role === "assistant" ? "bg-card" : "bg-background")}>{m.content}</Card>
+              ))}
+            </div>
+            <div className="p-3 border-t">
+              <div className="flex items-center gap-2">
+                <Button type="button" variant={listening ? "secondary" : "outline"} size="icon" onClick={listening ? stopVoice : startVoice} aria-label="Voice input">
+                  <Mic className={cn("h-4 w-4", listening && "animate-pulse")}/>
+                </Button>
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder='Ask about this patient, or say "Explain this screen"'
+                  onKeyDown={(e) => { if (e.key === 'Enter') onSend(); }}
+                  aria-label="Chat input"
+                />
+                <Button onClick={onSend} aria-label="Send message">
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+              <button
+                onClick={() => setInput("Explain the on-screen data for care planning.")}
+                className="mt-2 text-xs text-primary underline inline-flex items-center gap-1"
+              >
+                <Sparkles className="h-3 w-3" /> Use screen context
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
