@@ -62,6 +62,7 @@ const [trendOpen, setTrendOpen] = useState(false);
 const [trendMetric, setTrendMetric] = useState<"triglycerides" | "cholesterol" | "weight" | null>(null);
 const [trendData, setTrendData] = useState<Array<{ date: string; value: number }>>([]);
 const fnCallBufferRef = useRef<Record<string, string>>({});
+const fnCallNameRef = useRef<Record<string, string>>({});
 const clearRestartTimer = () => {
   if (restartTimerRef.current) {
     clearTimeout(restartTimerRef.current);
@@ -253,10 +254,53 @@ const startVoice = async () => {
       'You are Journey, a friendly, concise clinical dashboard assistant. Reference on-screen context when helpful and keep replies under 2 sentences.' +
       ` Context: ${JSON.stringify(ctx).slice(0, 2000)}`;
     const chat = new RealtimeChat((event) => {
+      // Audio speaking state
       if (event?.type === "response.audio.delta") {
         setSpeaking(true);
-      } else if (event?.type === "response.audio.done") {
+        return;
+      }
+      if (event?.type === "response.audio.done") {
         setSpeaking(false);
+        return;
+      }
+
+      // Tool call name created (some variants use different event names)
+      if (event?.type === "response.function_call.created" || event?.type === "response.tool_call.created") {
+        const callId = event?.call_id || event?.id;
+        if (callId && event?.name) {
+          fnCallNameRef.current[callId] = event.name;
+        }
+        return;
+      }
+
+      // Accumulate function-call arguments
+      if (event?.type === "response.function_call_arguments.delta") {
+        const callId = event?.call_id;
+        if (callId && typeof event?.delta === "string") {
+          fnCallBufferRef.current[callId] = (fnCallBufferRef.current[callId] || "") + event.delta;
+        }
+        return;
+      }
+
+      if (event?.type === "response.function_call_arguments.done") {
+        const callId = event?.call_id;
+        const name = (callId && fnCallNameRef.current[callId]) || event?.name;
+        const argStr = (callId && fnCallBufferRef.current[callId]) || event?.arguments || "";
+        // cleanup
+        if (callId) {
+          delete fnCallBufferRef.current[callId];
+          delete fnCallNameRef.current[callId];
+        }
+        try {
+          const args = argStr ? JSON.parse(argStr) : {};
+          const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
+          if ((name === "show_trend" || args?.metric) && metric) {
+            openTrend(metric);
+          }
+        } catch (err) {
+          console.warn("Failed to parse function args", err, argStr);
+        }
+        return;
       }
     });
     realtimeRef.current = chat;

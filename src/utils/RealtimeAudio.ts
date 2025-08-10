@@ -39,6 +39,52 @@ export class RealtimeChat {
         try {
           const event = JSON.parse(e.data);
           console.log("Realtime event:", event);
+
+          // After session is created, immediately configure it with our settings and tools
+          if (event?.type === "session.created") {
+            const sessionUpdate = {
+              type: "session.update",
+              session: {
+                modalities: ["text", "audio"],
+                instructions: instructions || undefined,
+                voice: "alloy",
+                input_audio_format: "pcm16",
+                output_audio_format: "pcm16",
+                input_audio_transcription: { model: "whisper-1" },
+                turn_detection: {
+                  type: "server_vad",
+                  threshold: 0.5,
+                  prefix_padding_ms: 300,
+                  silence_duration_ms: 1000,
+                },
+                tools: [
+                  {
+                    type: "function",
+                    name: "show_trend",
+                    description:
+                      "Open a trend chart modal for triglycerides, cholesterol, or weight. Range defaults to 'year' for lipids and 'last year' for weight.",
+                    parameters: {
+                      type: "object",
+                      properties: {
+                        metric: { type: "string", enum: ["triglycerides", "cholesterol", "weight"] },
+                        range: { type: "string", enum: ["year", "last_year", "last_12_months"] },
+                      },
+                      required: ["metric"],
+                    },
+                  },
+                ],
+                tool_choice: "auto",
+              },
+            } as const;
+
+            try {
+              this.dc?.send(JSON.stringify(sessionUpdate));
+              console.log("Sent session.update with tools");
+            } catch (err) {
+              console.warn("Failed to send session.update", err);
+            }
+          }
+
           this.onMessage?.(event);
         } catch {
           // Non-JSON events can be ignored
