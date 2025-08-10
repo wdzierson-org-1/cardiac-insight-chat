@@ -4,7 +4,7 @@ export const MedicalHistoryCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
-        <CardTitle className="text-lg">Medical History</CardTitle>
+        <CardTitle className="text-base md:text-lg">Medical History</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4 text-sm">
         <div>

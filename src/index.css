@@ -77,6 +77,13 @@ All colors MUST be HSL.
     --chat-accent: 267 74% 58%;
     --chat-bubble: 270 100% 96%;
     --chat-bubble-user: 221 83% 96%;
+
+    /* Sidebar nav icon colors */
+    --nav-blue: 211 90% 45%;
+    --nav-teal: 183 67% 45%;
+    --nav-green: 151 45% 38%;
+    --nav-pink: 332 72% 60%;
+    --nav-purple: 267 75% 60%;
   }
 
   .dark {
@@ -130,6 +137,13 @@ All colors MUST be HSL.
     --chat-accent: 267 74% 70%;
     --chat-bubble: 270 25% 22%;
     --chat-bubble-user: 221 35% 24%;
+
+    /* Sidebar nav icon colors (dark) */
+    --nav-blue: 211 70% 65%;
+    --nav-teal: 183 60% 55%;
+    --nav-green: 151 45% 60%;
+    --nav-pink: 332 70% 70%;
+    --nav-purple: 267 70% 70%;
   }
 }
 
