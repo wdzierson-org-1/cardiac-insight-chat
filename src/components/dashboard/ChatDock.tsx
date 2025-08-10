@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Mic, Send, Brain, Sparkles } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
+import { RealtimeChat } from "@/utils/RealtimeAudio";
 
 interface Message { role: "user" | "assistant"; content: string }
 
@@ -55,7 +56,7 @@ const { showTrendingVitals } = useAssistantUI();
 const audioRef = useRef<HTMLAudioElement | null>(null);
 const recognizingRef = useRef(false);
 const restartTimerRef = useRef<number | null>(null);
-
+const realtimeRef = useRef<RealtimeChat | null>(null);
 const clearRestartTimer = () => {
   if (restartTimerRef.current) {
     clearTimeout(restartTimerRef.current);
@@ -137,6 +138,15 @@ const onSend = async (customText?: string) => {
   setMessages((m) => [...m, user]);
   setInput("");
 
+  if (listening && realtimeRef.current) {
+    try {
+      realtimeRef.current.sendMessage(text);
+    } catch (e) {
+      console.error("Realtime send error", e);
+    }
+    return;
+  }
+
   const ctx = collectScreenContext();
   // Simple action detection until richer tooling
   if (/trending\s+vitals/i.test(text)) {
@@ -177,66 +187,31 @@ if (audioB64 && audioRef.current) {
   }
 };
 
-  const startVoice = async () => {
-    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      alert("Speech Recognition not supported in this browser.");
-      return;
-    }
-const rec: any = new SR();
-recognitionRef.current = rec;
-rec.lang = "en-US";
-rec.interimResults = false;
-rec.continuous = true;
-rec.onresult = (ev: any) => {
-  for (let i = ev.resultIndex; i < ev.results.length; i++) {
-    const res = ev.results[i];
-    const t = res[0]?.transcript?.trim();
-    if (res.isFinal && t && !speakingRef.current) {
-      onSend(t);
-    }
+const startVoice = async () => {
+  try {
+    const ctx = collectScreenContext();
+    const instructions =
+      'You are Journey, a friendly, concise clinical dashboard assistant. Reference on-screen context when helpful and keep replies under 2 sentences.' +
+      ` Context: ${JSON.stringify(ctx).slice(0, 2000)}`;
+    const chat = new RealtimeChat((event) => {
+      if (event?.type === "response.audio.delta") {
+        setSpeaking(true);
+      } else if (event?.type === "response.audio.done") {
+        setSpeaking(false);
+      }
+    });
+    realtimeRef.current = chat;
+    await chat.init(instructions);
+    setListening(true);
+  } catch (e) {
+    console.error("startVoice error", e);
   }
 };
-rec.onstart = () => {
-  recognizingRef.current = true;
-  setListening(true);
-};
-rec.onend = () => {
-  recognizingRef.current = false;
-  if (listeningRef.current && !speakingRef.current) {
-    scheduleStart(200);
-  }
-};
-rec.onerror = (e: any) => {
-  console.log("SpeechRecognition error", e);
-  recognizingRef.current = false;
-  if (listeningRef.current && !speakingRef.current) {
-    scheduleStart(350);
-  }
-};
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-setListening(true);
-safeStart(0);
-// Greet when starting voice mode
-      const greet = "Hi Dr. Harlow, how can I help today?";
-      setMessages((m) => [...m, { role: "assistant", content: greet }]);
-      const { data: gAudio } = await supabase.functions.invoke("text-to-speech", {
-        body: { text: greet, voice: "alloy" },
-      });
-      const audioB64 = (gAudio as any)?.audioContent;
-if (audioB64 && audioRef.current) {
-  audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-  safeAbort();
-  audioRef.current.play();
-}
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
 const stopVoice = () => {
   setListening(false);
+  try { realtimeRef.current?.disconnect(); } catch {}
+  setSpeaking(false);
   clearRestartTimer();
   safeAbort();
   try { audioRef.current?.pause(); } catch {}

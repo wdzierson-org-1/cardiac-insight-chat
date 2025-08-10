@@ -10,7 +10,6 @@ import { AssistantUIProvider } from "./assistant-ui-context";
 import { ChatDock } from "./ChatDock";
 import { TrendingVitalsPanel } from "./TrendingVitalsPanel";
 import { VoiceAssistant } from "./VoiceAssistant";
-import RealtimeVoiceInterface from "./RealtimeVoiceInterface";
 
 export const DashboardLayout = () => {
   return (
@@ -36,7 +35,7 @@ export const DashboardLayout = () => {
       </div>
       <TrendingVitalsPanel />
       <VoiceAssistant />
-      <RealtimeVoiceInterface />
+      
     </AssistantUIProvider>
   );
 };
