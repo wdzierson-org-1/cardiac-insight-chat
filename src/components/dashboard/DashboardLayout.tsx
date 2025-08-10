@@ -9,6 +9,7 @@ import { CommunityCardiologistCard } from "./cards/CommunityCardiologistCard";
 import { AssistantUIProvider } from "./assistant-ui-context";
 import { ChatDock } from "./ChatDock";
 import { TrendingVitalsPanel } from "./TrendingVitalsPanel";
+import { VoiceAssistant } from "./VoiceAssistant";
 
 export const DashboardLayout = () => {
   return (
@@ -33,6 +34,7 @@ export const DashboardLayout = () => {
         <ChatDock />
       </div>
       <TrendingVitalsPanel />
+      <VoiceAssistant />
     </AssistantUIProvider>
   );
 };
