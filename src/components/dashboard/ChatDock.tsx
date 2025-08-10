@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Mic, Send, Brain } from "lucide-react";
+import { Mic, Send, Brain, Sparkles } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChat } from "@/utils/RealtimeAudio";
@@ -61,8 +61,6 @@ const realtimeRef = useRef<RealtimeChat | null>(null);
 const [trendOpen, setTrendOpen] = useState(false);
 const [trendMetric, setTrendMetric] = useState<"triglycerides" | "cholesterol" | "weight" | null>(null);
 const [trendData, setTrendData] = useState<Array<{ date: string; value: number }>>([]);
-const [compareMetrics, setCompareMetrics] = useState<Array<"triglycerides" | "cholesterol"> | null>(null);
-const [compareData, setCompareData] = useState<Record<"triglycerides" | "cholesterol", Array<{ date: string; value: number }>> | null>(null);
 const fnCallBufferRef = useRef<Record<string, string>>({});
 const fnCallNameRef = useRef<Record<string, string>>({});
 const clearRestartTimer = () => {
@@ -108,18 +106,6 @@ const openTrend = (metric: "triglycerides" | "cholesterol" | "weight") => {
   setTrendMetric(metric);
   const data = metric === "weight" ? buildWeightTrend() : buildLipidTrend(metric as "triglycerides" | "cholesterol");
   setTrendData(data);
-  setTrendOpen(true);
-};
-
-const openCompareTrend = (metrics: Array<"triglycerides" | "cholesterol">) => {
-  setCompareMetrics(metrics);
-  const dataMap = {
-    triglycerides: buildLipidTrend("triglycerides"),
-    cholesterol: buildLipidTrend("cholesterol"),
-  } as const;
-  setCompareData({ triglycerides: dataMap.triglycerides, cholesterol: dataMap.cholesterol });
-  setTrendMetric(null);
-  setTrendData([]);
   setTrendOpen(true);
 };
 
@@ -198,11 +184,6 @@ const onSend = async (customText?: string) => {
   setInput("");
 
   // Detect trend requests first
-  // Compare lipids: if both triglycerides and cholesterol are mentioned
-  if (/\btriglycerid(?:e|es)\b/i.test(text) && /\bcholesterol\b/i.test(text)) {
-    openCompareTrend(["triglycerides", "cholesterol"]);
-    return;
-  }
   const lipidMatch = text.match(/(?:year\s*trend.*(triglycerides|cholesterol)|(triglycerides|cholesterol).*?(?:year|last\s*year))/i);
   if (lipidMatch) {
     const metric = (lipidMatch[1] || lipidMatch[2] || "").toLowerCase() as "triglycerides" | "cholesterol";
@@ -313,10 +294,7 @@ const startVoice = async () => {
         try {
           const args = argStr ? JSON.parse(argStr) : {};
           const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
-          const metrics = Array.isArray(args?.metrics) ? (args.metrics as Array<"triglycerides" | "cholesterol">) : undefined;
-          if ((name === "show_trend") && metrics && metrics.includes("triglycerides") && metrics.includes("cholesterol")) {
-            openCompareTrend(["triglycerides", "cholesterol"]);
-          } else if ((name === "show_trend" || args?.metric) && metric) {
+          if ((name === "show_trend" || args?.metric) && metric) {
             openTrend(metric);
           }
         } catch (err) {
@@ -383,6 +361,26 @@ const stopVoice = () => {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
+<div className="mt-2 flex items-center gap-3">
+  <button
+    onClick={() => onSend("Explain the on-screen data for care planning.")}
+    className="text-xs text-primary underline inline-flex items-center gap-1"
+  >
+    <Sparkles className="h-3 w-3" /> Explain this screen
+  </button>
+  <button
+    onClick={() => onSend("Show trending vitals for the last 6 months")}
+    className="text-xs text-primary underline"
+  >
+    Show trending vitals
+  </button>
+  <button
+    onClick={() => onSend("Summarize the lipid panel in one sentence")}
+    className="text-xs text-primary underline"
+  >
+    Summarize lipids
+  </button>
+</div>
             </div>
           </>
         )}
@@ -392,8 +390,6 @@ const stopVoice = () => {
         onOpenChange={setTrendOpen}
         metric={trendMetric}
         data={trendData}
-        compare={compareMetrics ?? null}
-        compareData={compareData ?? undefined}
       />
     </div>
   );

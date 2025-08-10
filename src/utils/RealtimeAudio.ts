@@ -62,20 +62,14 @@ export class RealtimeChat {
                     type: "function",
                     name: "show_trend",
                     description:
-                      "Open a trend chart modal for triglycerides, cholesterol, weight, or compare lipids.",
+                      "Open a trend chart modal for triglycerides, cholesterol, or weight. Range defaults to 'year' for lipids and 'last year' for weight.",
                     parameters: {
                       type: "object",
                       properties: {
                         metric: { type: "string", enum: ["triglycerides", "cholesterol", "weight"] },
-                        metrics: {
-                          type: "array",
-                          items: { type: "string", enum: ["triglycerides", "cholesterol"] },
-                          minItems: 2,
-                          maxItems: 2,
-                        },
                         range: { type: "string", enum: ["year", "last_year", "last_12_months"] },
                       },
-                      // either metric or metrics can be provided
+                      required: ["metric"],
                     },
                   },
                 ],
