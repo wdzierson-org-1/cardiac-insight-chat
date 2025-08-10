@@ -61,15 +61,22 @@ All colors MUST be HSL.
     --brand-2: 266 75% 60%;
     --brand-3: 192 70% 44%;
     --gradient-primary: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-2)));
-    --shadow-soft: 0 10px 30px -12px hsl(var(--brand)/0.25);
+    --shadow-soft: 0 14px 28px -12px hsl(var(--panel-blue) / 0.28);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Panel header colors */
-    --panel-blue: 210 80% 40%;
-    --panel-teal: 173 60% 36%;
-    --panel-green: 145 45% 35%;
-    --panel-gold: 42 85% 50%;
+    --panel-blue: 209 80% 38%;
+    --panel-teal: 193 60% 40%;
+    --panel-green: 158 49% 36%;
+    --panel-gold: 40 90% 54%;
     --panel-foreground: 210 40% 98%;
+
+    /* Chat UI (light purple) */
+    --chat-bg: 270 100% 97%;
+    --chat-border: 270 67% 85%;
+    --chat-accent: 267 74% 58%;
+    --chat-bubble: 270 100% 96%;
+    --chat-bubble-user: 221 83% 96%;
   }
 
   .dark {
@@ -114,8 +121,15 @@ All colors MUST be HSL.
     --brand-2: 266 75% 70%;
     --brand-3: 192 70% 56%;
     --gradient-primary: linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-2)));
-    --shadow-soft: 0 10px 30px -12px hsl(var(--brand)/0.35);
+    --shadow-soft: 0 14px 28px -12px hsl(var(--panel-blue) / 0.35);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Chat UI (dark) */
+    --chat-bg: 270 25% 18%;
+    --chat-border: 270 30% 26%;
+    --chat-accent: 267 74% 70%;
+    --chat-bubble: 270 25% 22%;
+    --chat-bubble-user: 221 35% 24%;
   }
 }
 

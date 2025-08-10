@@ -16,7 +16,7 @@ const VRow = ({ label, value, normal, dataKey }: { label: string; value: number;
 export const VitalsCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
-      <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]">
+      <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Activity className="h-4 w-4" aria-hidden />

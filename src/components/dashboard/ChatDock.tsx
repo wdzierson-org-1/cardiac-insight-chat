@@ -105,10 +105,10 @@ const onSend = async (customText?: string) => {
     <div className={cn("fixed left-4 bottom-4 z-30")}
       aria-live="polite" aria-label="Clinical Assistant Dock">
       <div className={cn(
-        "w-[350px] sm:w-[380px] rounded-2xl border bg-popover shadow-lg transition-all",
+        "w-[350px] sm:w-[380px] rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",
         open ? "h-[460px]" : "h-14",
       )}>
-        <div className="flex items-center justify-between px-3 py-2 border-b">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))]">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-[hsl(var(--brand-2))]" />
             <span className="font-medium">Clinical Assistant</span>
@@ -121,14 +121,14 @@ const onSend = async (customText?: string) => {
         {open && (
           <>
             <div ref={containerRef} className="h-[340px] overflow-y-auto p-3 space-y-3">
-              <div className="rounded-lg bg-secondary p-2 text-xs text-secondary-foreground">
+              <div className="rounded-lg bg-[hsl(var(--chat-bubble))] border border-[hsl(var(--chat-border))] p-2 text-xs">
                 Connect Supabase to enable secure OpenAI access and RAG. In this demo, responses are simulated.
               </div>
               {messages.map((m, i) => (
-                <Card key={i} className={cn("p-2 text-sm", m.role === "assistant" ? "bg-card" : "bg-background")}>{m.content}</Card>
+                <Card key={i} className={cn("p-2 text-sm border-0 shadow-none", m.role === "assistant" ? "bg-[hsl(var(--chat-bubble))]" : "bg-[hsl(var(--chat-user-bubble))]")}>{m.content}</Card>
               ))}
             </div>
-            <div className="p-3 border-t">
+            <div className="p-3 border-t border-[hsl(var(--chat-border))]">
               <div className="flex items-center gap-2">
                 <Button type="button" variant={listening ? "secondary" : "outline"} size="icon" onClick={listening ? stopVoice : startVoice} aria-label="Voice input">
                   <Mic className={cn("h-4 w-4", listening && "animate-pulse")}/>
@@ -139,6 +139,7 @@ const onSend = async (customText?: string) => {
                   placeholder='Ask about this patient, or say "Explain this screen"'
                   onKeyDown={(e) => { if (e.key === 'Enter') onSend(); }}
                   aria-label="Chat input"
+                  className="bg-white/70 focus-visible:ring-[hsl(var(--chat-accent))] placeholder:text-muted-foreground"
                 />
                 <Button onClick={() => onSend()} aria-label="Send message">
                   <Send className="h-4 w-4" />
