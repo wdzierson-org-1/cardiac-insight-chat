@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Mic, Send, Brain, Sparkles } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message { role: "user" | "assistant"; content: string }
 
@@ -48,6 +49,8 @@ export const ChatDock = () => {
   const recognitionRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { showTrendingVitals } = useAssistantUI();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => { audioRef.current = new Audio(); }, []);
 
   useEffect(() => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight, behavior: "smooth" });
@@ -58,17 +61,45 @@ const onSend = async (customText?: string) => {
   if (!text) return;
   const user = { role: "user" as const, content: text };
   setMessages((m) => [...m, user]);
+  setInput("");
 
   const ctx = collectScreenContext();
-  // Simple action detection until server AI is connected
+  // Simple action detection until richer tooling
   if (/trending\s+vitals/i.test(text)) {
     showTrendingVitals();
   }
+  if (/lipid\s+panel/i.test(text)) {
+    const cards = Array.from(document.querySelectorAll("[data-card-title]"));
+    for (const card of cards) {
+      const h = card.querySelector("h3");
+      if (h && h.textContent && /lipid panel/i.test(h.textContent)) {
+        (card as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+        break;
+      }
+    }
+  }
 
-  // Placeholder until Supabase + OpenAI proxy is connected
-  const reply = mockAssistant(text, ctx);
-  setMessages((m) => [...m, { role: "assistant", content: reply }]);
-  setInput("");
+  try {
+    const system = 'You are Journey, a friendly, concise clinical dashboard assistant. Reference on-screen context when helpful and keep replies under 2 sentences.';
+    const { data: gData, error: gErr } = await supabase.functions.invoke("generate-with-ai", {
+      body: { prompt: `User: ${text}\nScreen context: ${JSON.stringify(ctx).slice(0, 2000)}`, system },
+    });
+    if (gErr) throw gErr;
+    const answer = (gData as any)?.generatedText || "Okay.";
+    setMessages((m) => [...m, { role: "assistant", content: answer }]);
+
+    // Speak the answer back using an OpenAI standard voice
+    const { data: sData } = await supabase.functions.invoke("text-to-speech", {
+      body: { text: answer, voice: "alloy" },
+    });
+    const audioB64 = (sData as any)?.audioContent;
+    if (audioB64 && audioRef.current) {
+      audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
+      audioRef.current.play();
+    }
+  } catch (e) {
+    console.error("Assistant error", e);
+  }
 };
 
   const startVoice = async () => {
@@ -111,7 +142,7 @@ const onSend = async (customText?: string) => {
         <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bubble))]">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-[hsl(var(--brand-2))]" />
-            <span className="font-medium">Clinical Assistant</span>
+            <span className="font-medium">Journey</span>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-label="Toggle chat">
             {open ? "Minimize" : "Open"}
@@ -121,9 +152,6 @@ const onSend = async (customText?: string) => {
         {open && (
           <>
             <div ref={containerRef} className="h-[340px] overflow-y-auto p-3 space-y-3">
-              <div className="rounded-lg bg-[hsl(var(--chat-bubble))] border border-[hsl(var(--chat-border))] p-2 text-xs">
-                Connect Supabase to enable secure OpenAI access and RAG. In this demo, responses are simulated.
-              </div>
               {messages.map((m, i) => (
                 <Card key={i} className={cn("p-2 text-sm border-0 shadow-none", m.role === "assistant" ? "bg-[hsl(var(--chat-bubble))]" : "bg-[hsl(var(--chat-bubble-user))]")}>{m.content}</Card>
               ))}

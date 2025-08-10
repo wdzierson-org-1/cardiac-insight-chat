@@ -8,7 +8,7 @@ const VRow = ({ label, value, normal, variant = "good" }: { label: string; value
   const badgeClasses =
     (variant === "warn"
       ? "bg-destructive/90 text-destructive-foreground"
-      : "bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]") +
+      : "bg-[hsl(var(--panel-green))] text-foreground") +
     " rounded-full px-2 py-0.5 text-[10px] md:text-xs font-medium";
 
   return (

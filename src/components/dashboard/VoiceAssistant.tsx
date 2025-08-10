@@ -97,20 +97,20 @@ export const VoiceAssistant: React.FC = () => {
         // Handle simple UI commands
         const handled = handleCommand(text);
 
-        // Ask OpenAI for an answer regardless; it can provide context
-        const prompt = `User said: "${text}"\nIf it sounds like a command about the dashboard, reply concisely. If it's a question, answer briefly.`;
+        const system = 'You are Journey, a concise clinical assistant for this dashboard. If it sounds like a UI command, describe what you did; otherwise answer briefly.';
+        const prompt = `User said: "${text}"`;
         const { data: gData, error: gErr } = await supabase.functions.invoke("generate-with-ai", {
-          body: { prompt },
+          body: { prompt, system },
         });
         if (gErr) {
-          toast({ title: "Assistant error", description: String(gErr.message || gErr), variant: "destructive" });
+          toast({ title: "Journey error", description: String(gErr.message || gErr), variant: "destructive" });
           return;
         }
-        const answer = (gData as any)?.generatedText || "";
-        toast({ title: handled ? "Done" : "Assistant", description: answer });
+        const answer = (gData as any)?.generatedText || "Okay.";
+        toast({ title: handled ? "Done" : "Journey", description: answer });
 
         const { data: sData, error: sErr } = await supabase.functions.invoke("text-to-speech", {
-          body: { text: answer },
+          body: { text: answer, voice: "alloy" },
         });
         if (sErr) return; // silently fail TTS
         const audioB64 = (sData as any)?.audioContent;
