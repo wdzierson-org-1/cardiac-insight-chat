@@ -53,6 +53,55 @@ const speakingRef = useRef(false);
 const containerRef = useRef<HTMLDivElement>(null);
 const { showTrendingVitals } = useAssistantUI();
 const audioRef = useRef<HTMLAudioElement | null>(null);
+const recognizingRef = useRef(false);
+const restartTimerRef = useRef<number | null>(null);
+
+const clearRestartTimer = () => {
+  if (restartTimerRef.current) {
+    clearTimeout(restartTimerRef.current);
+    restartTimerRef.current = null;
+  }
+};
+
+const scheduleStart = (ms = 200) => {
+  clearRestartTimer();
+  restartTimerRef.current = setTimeout(() => safeStart(0), ms) as unknown as number;
+};
+
+const safeStart = (delay = 0) => {
+  const attempt = () => {
+    if (!listeningRef.current || speakingRef.current) return;
+    const rec = recognitionRef.current;
+    if (!rec) return;
+    if (recognizingRef.current) return;
+    try {
+      rec.start();
+    } catch (err: any) {
+      console.log("rec.start error", err);
+      if (err?.name === "InvalidStateError") {
+        scheduleStart(300);
+      }
+    }
+  };
+
+  if (delay > 0) {
+    scheduleStart(delay);
+  } else {
+    attempt();
+  }
+};
+
+const safeAbort = () => {
+  const rec = recognitionRef.current;
+  if (!rec) return;
+  try {
+    rec.abort?.();
+  } catch {
+    try { rec.stop?.(); } catch {}
+  } finally {
+    recognizingRef.current = false;
+  }
+};
 
 // keep refs in sync with state
 useEffect(() => { listeningRef.current = listening; }, [listening]);
@@ -64,12 +113,12 @@ useEffect(() => {
   audioRef.current = el; 
   el.onplay = () => {
     setSpeaking(true);
-    try { recognitionRef.current?.stop(); } catch {}
+    safeAbort();
   };
   el.onended = () => {
     setSpeaking(false);
     if (listeningRef.current) {
-      try { recognitionRef.current?.start(); } catch (e) { console.log("re-start recognition after TTS", e); }
+      scheduleStart(250);
     }
   };
   return () => {
@@ -120,7 +169,7 @@ const onSend = async (customText?: string) => {
     const audioB64 = (sData as any)?.audioContent;
 if (audioB64 && audioRef.current) {
   audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-  try { recognitionRef.current?.stop(); } catch {}
+  safeAbort();
   audioRef.current.play();
 }
   } catch (e) {
@@ -148,24 +197,28 @@ rec.onresult = (ev: any) => {
     }
   }
 };
+rec.onstart = () => {
+  recognizingRef.current = true;
+  setListening(true);
+};
 rec.onend = () => {
+  recognizingRef.current = false;
   if (listeningRef.current && !speakingRef.current) {
-    try { rec.start(); } catch (e) { console.log("rec.onend restart", e); }
+    scheduleStart(200);
   }
 };
 rec.onerror = (e: any) => {
   console.log("SpeechRecognition error", e);
+  recognizingRef.current = false;
   if (listeningRef.current && !speakingRef.current) {
-    setTimeout(() => {
-      try { rec.start(); } catch (err) { console.log("rec.onerror restart", err); }
-    }, 250);
+    scheduleStart(350);
   }
 };
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      setListening(true);
-      rec.start();
-      // Greet when starting voice mode
+setListening(true);
+safeStart(0);
+// Greet when starting voice mode
       const greet = "Hi Dr. Harlow, how can I help today?";
       setMessages((m) => [...m, { role: "assistant", content: greet }]);
       const { data: gAudio } = await supabase.functions.invoke("text-to-speech", {
@@ -174,7 +227,7 @@ rec.onerror = (e: any) => {
       const audioB64 = (gAudio as any)?.audioContent;
 if (audioB64 && audioRef.current) {
   audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-  try { recognitionRef.current?.stop(); } catch {}
+  safeAbort();
   audioRef.current.play();
 }
     } catch (e) {
@@ -184,9 +237,11 @@ if (audioB64 && audioRef.current) {
 
 const stopVoice = () => {
   setListening(false);
-  try { recognitionRef.current?.stop(); } catch {}
+  clearRestartTimer();
+  safeAbort();
+  try { audioRef.current?.pause(); } catch {}
+  recognizingRef.current = false;
 };
-
   return (
     <div className={cn("fixed left-4 bottom-4 z-30")}
       aria-live="polite" aria-label="Clinical Assistant Dock">
