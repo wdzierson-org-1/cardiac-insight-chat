@@ -5,6 +5,7 @@ import { MedicalHistoryCard } from "./cards/MedicalHistoryCard";
 import { LipidPanelCard } from "./cards/LipidPanelCard";
 import { VitalsCard } from "./cards/VitalsCard";
 import { EducationCard } from "./cards/EducationCard";
+import { CommunityCardiologistCard } from "./cards/CommunityCardiologistCard";
 import { AssistantUIProvider } from "./assistant-ui-context";
 import { ChatDock } from "./ChatDock";
 import { TrendingVitalsPanel } from "./TrendingVitalsPanel";
@@ -22,6 +23,7 @@ export const DashboardLayout = () => {
             <section className="grid grid-cols-12 gap-5 md:gap-6">
               <PatientSummaryCard />
               <MedicalHistoryCard />
+              <CommunityCardiologistCard />
               <EducationCard />
               <LipidPanelCard />
               <VitalsCard />
