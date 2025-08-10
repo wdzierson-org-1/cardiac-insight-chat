@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Mic, Send, Brain, Sparkles } from "lucide-react";
+import { Mic, Send, Brain } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChat } from "@/utils/RealtimeAudio";
@@ -361,26 +361,6 @@ const stopVoice = () => {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
-<div className="mt-2 flex items-center gap-3">
-  <button
-    onClick={() => onSend("Explain the on-screen data for care planning.")}
-    className="text-xs text-primary underline inline-flex items-center gap-1"
-  >
-    <Sparkles className="h-3 w-3" /> Explain this screen
-  </button>
-  <button
-    onClick={() => onSend("Show trending vitals for the last 6 months")}
-    className="text-xs text-primary underline"
-  >
-    Show trending vitals
-  </button>
-  <button
-    onClick={() => onSend("Summarize the lipid panel in one sentence")}
-    className="text-xs text-primary underline"
-  >
-    Summarize lipids
-  </button>
-</div>
             </div>
           </>
         )}
