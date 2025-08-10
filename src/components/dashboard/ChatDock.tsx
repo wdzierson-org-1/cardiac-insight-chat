@@ -7,6 +7,7 @@ import { Mic, Send, Brain, Sparkles } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChat } from "@/utils/RealtimeAudio";
+import { TrendModal } from "./TrendModal";
 
 interface Message { role: "user" | "assistant"; content: string }
 
@@ -57,11 +58,54 @@ const audioRef = useRef<HTMLAudioElement | null>(null);
 const recognizingRef = useRef(false);
 const restartTimerRef = useRef<number | null>(null);
 const realtimeRef = useRef<RealtimeChat | null>(null);
+const [trendOpen, setTrendOpen] = useState(false);
+const [trendMetric, setTrendMetric] = useState<"triglycerides" | "cholesterol" | "weight" | null>(null);
+const [trendData, setTrendData] = useState<Array<{ date: string; value: number }>>([]);
+const fnCallBufferRef = useRef<Record<string, string>>({});
 const clearRestartTimer = () => {
   if (restartTimerRef.current) {
     clearTimeout(restartTimerRef.current);
     restartTimerRef.current = null;
   }
+};
+
+const buildLipidTrend = (metric: "triglycerides" | "cholesterol") => {
+  const points = [
+    { date: "2022-03", value: metric === "triglycerides" ? 120 : 165 },
+    { date: "2022-08", value: metric === "triglycerides" ? 128 : 168 },
+    { date: "2023-01", value: metric === "triglycerides" ? 136 : 173 },
+    { date: "2023-06", value: metric === "triglycerides" ? 145 : 178 },
+    { date: "2023-12", value: metric === "triglycerides" ? 151 : 183 },
+    { date: "2024-05", value: metric === "triglycerides" ? 156 : 186 },
+    { date: "2024-11", value: metric === "triglycerides" ? 160 : 189 },
+    { date: "2025-04", value: metric === "triglycerides" ? 163 : 192 },
+  ];
+  return points;
+};
+
+const buildWeightTrend = () => {
+  const end = 202; // Match Vitals panel current value
+  const months: string[] = [];
+  const now = new Date();
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    months.push(`${yyyy}-${mm}`);
+  }
+  const start = end - 8; // modest upward trend
+  const data = months.map((date, idx) => ({
+    date,
+    value: Math.round(start + (idx * (end - start)) / (months.length - 1)),
+  }));
+  return data;
+};
+
+const openTrend = (metric: "triglycerides" | "cholesterol" | "weight") => {
+  setTrendMetric(metric);
+  const data = metric === "weight" ? buildWeightTrend() : buildLipidTrend(metric as "triglycerides" | "cholesterol");
+  setTrendData(data);
+  setTrendOpen(true);
 };
 
 const scheduleStart = (ms = 200) => {
@@ -138,6 +182,21 @@ const onSend = async (customText?: string) => {
   setMessages((m) => [...m, user]);
   setInput("");
 
+  // Detect trend requests first
+  const lipidMatch = text.match(/(?:year\s*trend.*(triglycerides|cholesterol)|(triglycerides|cholesterol).*?(?:year|last\s*year))/i);
+  if (lipidMatch) {
+    const metric = (lipidMatch[1] || lipidMatch[2] || "").toLowerCase() as "triglycerides" | "cholesterol";
+    if (metric) {
+      openTrend(metric);
+      return;
+    }
+  }
+  if (/(weight).*(last\s*year|year)|(?:trend).*weight/i.test(text)) {
+    openTrend("weight");
+    return;
+  }
+
+  // If in voice mode, route to realtime and return
   if (listening && realtimeRef.current) {
     try {
       realtimeRef.current.sendMessage(text);
@@ -177,11 +236,11 @@ const onSend = async (customText?: string) => {
       body: { text: answer, voice: "alloy" },
     });
     const audioB64 = (sData as any)?.audioContent;
-if (audioB64 && audioRef.current) {
-  audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-  safeAbort();
-  audioRef.current.play();
-}
+    if (audioB64 && audioRef.current) {
+      audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
+      safeAbort();
+      audioRef.current.play();
+    }
   } catch (e) {
     console.error("Assistant error", e);
   }
@@ -282,6 +341,12 @@ const stopVoice = () => {
           </>
         )}
       </div>
+      <TrendModal
+        open={trendOpen}
+        onOpenChange={setTrendOpen}
+        metric={trendMetric}
+        data={trendData}
+      />
     </div>
   );
 };
