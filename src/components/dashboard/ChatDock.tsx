@@ -112,9 +112,15 @@ const onSend = async (customText?: string) => {
     recognitionRef.current = rec;
     rec.lang = "en-US";
     rec.interimResults = false;
+    rec.continuous = true;
     rec.onresult = (ev: any) => {
-      const t = ev.results[0][0].transcript;
-      setInput((p) => (p ? p + " " + t : t));
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const res = ev.results[i];
+        const t = res[0]?.transcript?.trim();
+        if (res.isFinal && t) {
+          onSend(t);
+        }
+      }
     };
     rec.onend = () => setListening(false);
     rec.onerror = () => setListening(false);
@@ -122,6 +128,17 @@ const onSend = async (customText?: string) => {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       setListening(true);
       rec.start();
+      // Greet when starting voice mode
+      const greet = "Hi Dr. Harlow, how can I help today?";
+      setMessages((m) => [...m, { role: "assistant", content: greet }]);
+      const { data: gAudio } = await supabase.functions.invoke("text-to-speech", {
+        body: { text: greet, voice: "alloy" },
+      });
+      const audioB64 = (gAudio as any)?.audioContent;
+      if (audioB64 && audioRef.current) {
+        audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
+        audioRef.current.play();
+      }
     } catch (e) {
       console.error(e);
     }
