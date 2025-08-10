@@ -45,13 +45,38 @@ export const ChatDock = () => {
     { role: "assistant", content: "Good morning, Dr. Harlow. Upcoming appointment: WARREN MCGINNIS at 10:00 AM. On your dashboard: Diagnoses, Vitals, Lab reports. See Patient Education for resources. Ask me to explain this screen or open trending vitals on demand." },
   ]);
   const [input, setInput] = useState("");
-  const [listening, setListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { showTrendingVitals } = useAssistantUI();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  useEffect(() => { audioRef.current = new Audio(); }, []);
+const [listening, setListening] = useState(false);
+const [speaking, setSpeaking] = useState(false);
+const recognitionRef = useRef<any>(null);
+const listeningRef = useRef(false);
+const speakingRef = useRef(false);
+const containerRef = useRef<HTMLDivElement>(null);
+const { showTrendingVitals } = useAssistantUI();
+const audioRef = useRef<HTMLAudioElement | null>(null);
 
+// keep refs in sync with state
+useEffect(() => { listeningRef.current = listening; }, [listening]);
+useEffect(() => { speakingRef.current = speaking; }, [speaking]);
+
+// single audio element with handlers to manage speaking/listening turns
+useEffect(() => { 
+  const el = new Audio();
+  audioRef.current = el; 
+  el.onplay = () => {
+    setSpeaking(true);
+    try { recognitionRef.current?.stop(); } catch {}
+  };
+  el.onended = () => {
+    setSpeaking(false);
+    if (listeningRef.current) {
+      try { recognitionRef.current?.start(); } catch (e) { console.log("re-start recognition after TTS", e); }
+    }
+  };
+  return () => {
+    el.onplay = null;
+    el.onended = null;
+  };
+}, []);
   useEffect(() => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
@@ -93,10 +118,11 @@ const onSend = async (customText?: string) => {
       body: { text: answer, voice: "alloy" },
     });
     const audioB64 = (sData as any)?.audioContent;
-    if (audioB64 && audioRef.current) {
-      audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-      audioRef.current.play();
-    }
+if (audioB64 && audioRef.current) {
+  audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
+  try { recognitionRef.current?.stop(); } catch {}
+  audioRef.current.play();
+}
   } catch (e) {
     console.error("Assistant error", e);
   }
@@ -108,22 +134,33 @@ const onSend = async (customText?: string) => {
       alert("Speech Recognition not supported in this browser.");
       return;
     }
-    const rec: any = new SR();
-    recognitionRef.current = rec;
-    rec.lang = "en-US";
-    rec.interimResults = false;
-    rec.continuous = true;
-    rec.onresult = (ev: any) => {
-      for (let i = ev.resultIndex; i < ev.results.length; i++) {
-        const res = ev.results[i];
-        const t = res[0]?.transcript?.trim();
-        if (res.isFinal && t) {
-          onSend(t);
-        }
-      }
-    };
-    rec.onend = () => setListening(false);
-    rec.onerror = () => setListening(false);
+const rec: any = new SR();
+recognitionRef.current = rec;
+rec.lang = "en-US";
+rec.interimResults = false;
+rec.continuous = true;
+rec.onresult = (ev: any) => {
+  for (let i = ev.resultIndex; i < ev.results.length; i++) {
+    const res = ev.results[i];
+    const t = res[0]?.transcript?.trim();
+    if (res.isFinal && t && !speakingRef.current) {
+      onSend(t);
+    }
+  }
+};
+rec.onend = () => {
+  if (listeningRef.current && !speakingRef.current) {
+    try { rec.start(); } catch (e) { console.log("rec.onend restart", e); }
+  }
+};
+rec.onerror = (e: any) => {
+  console.log("SpeechRecognition error", e);
+  if (listeningRef.current && !speakingRef.current) {
+    setTimeout(() => {
+      try { rec.start(); } catch (err) { console.log("rec.onerror restart", err); }
+    }, 250);
+  }
+};
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       setListening(true);
@@ -135,19 +172,20 @@ const onSend = async (customText?: string) => {
         body: { text: greet, voice: "alloy" },
       });
       const audioB64 = (gAudio as any)?.audioContent;
-      if (audioB64 && audioRef.current) {
-        audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
-        audioRef.current.play();
-      }
+if (audioB64 && audioRef.current) {
+  audioRef.current.src = `data:audio/mp3;base64,${audioB64}`;
+  try { recognitionRef.current?.stop(); } catch {}
+  audioRef.current.play();
+}
     } catch (e) {
       console.error(e);
     }
   };
 
-  const stopVoice = () => {
-    recognitionRef.current?.stop();
-    setListening(false);
-  };
+const stopVoice = () => {
+  setListening(false);
+  try { recognitionRef.current?.stop(); } catch {}
+};
 
   return (
     <div className={cn("fixed left-4 bottom-4 z-30")}
