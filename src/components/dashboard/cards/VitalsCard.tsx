@@ -3,15 +3,36 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { LineChart, Activity, MoreHorizontal } from "lucide-react";
 
-const VRow = ({ label, value, normal, dataKey, variant = "good" }: { label: string; value: number; normal: string; dataKey: string; variant?: "good" | "warn" }) => (
-  <div className="grid grid-cols-3 items-center gap-3 py-2" data-field={dataKey} data-value={String(value)}>
-    <div className="text-sm">{label}</div>
-    <div className="col-span-2">
-      <Progress value={Math.min(100, value)} variant={variant} />
-      <div className="text-xs text-muted-foreground mt-1">Normal Range {normal} • {value}</div>
+const VRow = ({ label, value, normal, variant = "good" }: { label: string; value: number; normal: string; variant?: "good" | "warn" }) => {
+  const indicatorLeft = variant === "warn" ? "75%" : "55%";
+  const badgeClasses =
+    (variant === "warn"
+      ? "bg-destructive/90 text-destructive-foreground"
+      : "bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]") +
+    " rounded-full px-2 py-0.5 text-[10px] md:text-xs font-medium";
+
+  return (
+    <div className="rounded-xl border border-[hsl(var(--panel-green))]/40 bg-background/60 p-3">
+      <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
+        <div className="font-medium truncate">{label}</div>
+        <div className="text-muted-foreground truncate">Normal Range {normal}</div>
+      </div>
+      <div className="relative h-6">
+        <div className="absolute inset-0 rounded-full bg-[hsl(var(--panel-gold))]/70" />
+        <div className="absolute left-[18%] right-[18%] top-0 bottom-0 rounded-full bg-[hsl(var(--panel-green))]" />
+        <div className="absolute inset-y-0" style={{ left: indicatorLeft }}>
+          <div className="h-full border-l border-dashed border-muted-foreground" />
+        </div>
+        <div className="absolute top-1/2 -translate-y-1/2 right-2">
+          <span className={badgeClasses}>
+            {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
+            {value}
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const VitalsCard = () => {
   return (
@@ -34,11 +55,12 @@ export const VitalsCard = () => {
             <LineChart className="h-3.5 w-3.5 mr-1" /> Compare result trends
           </Button>
         </div>
-        <VRow label="BMI" value={34} normal="18.5 - 24.9" dataKey="vital:bmi" variant="warn" />
-        <VRow label="SpO2" value={89} normal=">= 94%" dataKey="vital:spo2" variant="warn" />
-        <VRow label="BPM" value={72} normal="60 - 80 bpm" dataKey="vital:bpm" variant="good" />
-        <VRow label="BP Systolic" value={135} normal="< 130" dataKey="vital:bp_systolic" variant="warn" />
-        <VRow label="BP Diastolic" value={93} normal="< 80" dataKey="vital:bp_diastolic" variant="warn" />
+        <VRow label="Weight" value={202} normal="160-180 lbs" variant="warn" />
+        <VRow label="BMI" value={34} normal="18.5 - 24.9" variant="warn" />
+        <VRow label="SpO2" value={89} normal=">= 94%" variant="warn" />
+        <VRow label="BPM" value={122} normal="60 - 80 bpm" variant="warn" />
+        <VRow label="BP Systolic" value={172} normal="< 130" variant="warn" />
+        <VRow label="BP Diastolic" value={93} normal="< 80" variant="warn" />
       </CardContent>
     </Card>
   );
