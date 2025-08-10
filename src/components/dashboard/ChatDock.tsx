@@ -108,7 +108,7 @@ const onSend = async (customText?: string) => {
         "w-[350px] sm:w-[380px] rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",
         open ? "h-[460px]" : "h-14",
       )}>
-        <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bubble))]">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-[hsl(var(--brand-2))]" />
             <span className="font-medium">Clinical Assistant</span>
@@ -125,7 +125,7 @@ const onSend = async (customText?: string) => {
                 Connect Supabase to enable secure OpenAI access and RAG. In this demo, responses are simulated.
               </div>
               {messages.map((m, i) => (
-                <Card key={i} className={cn("p-2 text-sm border-0 shadow-none", m.role === "assistant" ? "bg-[hsl(var(--chat-bubble))]" : "bg-[hsl(var(--chat-user-bubble))]")}>{m.content}</Card>
+                <Card key={i} className={cn("p-2 text-sm border-0 shadow-none", m.role === "assistant" ? "bg-[hsl(var(--chat-bubble))]" : "bg-[hsl(var(--chat-bubble-user))]")}>{m.content}</Card>
               ))}
             </div>
             <div className="p-3 border-t border-[hsl(var(--chat-border))]">

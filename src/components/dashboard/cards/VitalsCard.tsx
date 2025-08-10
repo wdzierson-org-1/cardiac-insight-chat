@@ -30,8 +30,8 @@ export const VitalsCard = () => {
       <CardContent>
         <div className="mb-2 flex items-center justify-between text-xs">
           <span className="font-medium text-muted-foreground">Results</span>
-          <Button variant="outline" size="sm" className="h-7 px-2">
-            <LineChart className="h-3.5 w-3.5" /> Compare result trends
+          <Button variant="outline" size="sm" className="h-7 px-2 uppercase tracking-wide bg-[hsl(var(--panel-blue))]/10 text-[hsl(var(--panel-blue))] border-[hsl(var(--panel-blue))]/30 hover:bg-[hsl(var(--panel-blue))]/15">
+            <LineChart className="h-3.5 w-3.5 mr-1" /> Compare result trends
           </Button>
         </div>
         <VRow label="BMI" value={72} normal="18.5 - 24.9" dataKey="vital:bmi" />

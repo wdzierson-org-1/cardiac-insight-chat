@@ -30,8 +30,8 @@ export const LipidPanelCard = () => {
       <CardContent>
         <div className="mb-2 flex items-center justify-between text-xs">
           <span className="font-medium text-muted-foreground">Results</span>
-          <Button variant="outline" size="sm" className="h-7 px-2">
-            <LineChart className="h-3.5 w-3.5" /> Compare result trends
+          <Button variant="outline" size="sm" className="h-7 px-2 uppercase tracking-wide bg-[hsl(var(--panel-blue))]/10 text-[hsl(var(--panel-blue))] border-[hsl(var(--panel-blue))]/30 hover:bg-[hsl(var(--panel-blue))]/15">
+            <LineChart className="h-3.5 w-3.5 mr-1" /> Compare result trends
           </Button>
         </div>
         <Row label="Cholesterol" value={60} normal="100-199 mg/dL" dataKey="lipid:chol" />
