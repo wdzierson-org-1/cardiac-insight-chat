@@ -16,7 +16,12 @@ import { TrendingVitalsPanel } from "./TrendingVitalsPanel";
 import { VoiceAssistant } from "./VoiceAssistant";
 
 const DashboardContent = () => {
-  const { journeyInteracted, expandedLipidPanel } = useAssistantUI();
+  const { 
+    journeyInteracted, 
+    expandedLipidPanel, 
+    showHeartDietEducation, 
+    showExtraCardiologist 
+  } = useAssistantUI();
 
   return (
     <div className="min-h-screen grid grid-cols-12">
@@ -34,10 +39,10 @@ const DashboardContent = () => {
               <MedicalHistoryCard />
             </div>
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-200">
-              {journeyInteracted ? <EnhancedCommunityCardiologistCard /> : <CommunityCardiologistCard />}
+              {showExtraCardiologist ? <EnhancedCommunityCardiologistCard /> : <CommunityCardiologistCard />}
             </div>
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-300">
-              {journeyInteracted ? <EnhancedEducationCard /> : <EducationCard />}
+              {showHeartDietEducation ? <EnhancedEducationCard /> : <EducationCard />}
             </div>
             <div className={`transition-all duration-500 delay-400 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
               {expandedLipidPanel ? <ExpandedLipidPanelCard /> : (journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />)}
