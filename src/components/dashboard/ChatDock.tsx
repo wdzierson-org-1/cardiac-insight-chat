@@ -262,80 +262,119 @@ const onSend = async (customText?: string) => {
   }
 };
 
-const startVoice = async () => {
-  try {
-    const ctx = collectScreenContext();
-    const instructions =
-      'You are Journey, a friendly, concise clinical dashboard assistant. Reference on-screen context when helpful and keep replies under 2 sentences.' +
-      ` Context: ${JSON.stringify(ctx).slice(0, 2000)}`;
-    const chat = new RealtimeChat((event) => {
-      // Audio speaking state
-      if (event?.type === "response.audio.delta") {
-        setSpeaking(true);
-        return;
-      }
-      if (event?.type === "response.audio.done") {
-        setSpeaking(false);
-        return;
-      }
-
-      // Tool call name created (some variants use different event names)
-      if (event?.type === "response.function_call.created" || event?.type === "response.tool_call.created") {
-        const callId = event?.call_id || event?.id;
-        if (callId && event?.name) {
-          fnCallNameRef.current[callId] = event.name;
+  const startVoice = async () => {
+    try {
+      const ctx = collectScreenContext();
+      const instructions =
+        'You are Journey, a friendly, concise clinical dashboard assistant. Reference on-screen context when helpful and keep replies under 2 sentences. When you complete a task or action the user requests, acknowledge it with a brief phrase like "Sure!", "Done!", "Got it!", or "Complete!" before your main response.' +
+        ` Context: ${JSON.stringify(ctx).slice(0, 2000)}`;
+      const chat = new RealtimeChat((event) => {
+        // Audio speaking state
+        if (event?.type === "response.audio.delta") {
+          setSpeaking(true);
+          return;
         }
-        return;
-      }
-
-      // Accumulate function-call arguments
-      if (event?.type === "response.function_call_arguments.delta") {
-        const callId = event?.call_id;
-        if (callId && typeof event?.delta === "string") {
-          fnCallBufferRef.current[callId] = (fnCallBufferRef.current[callId] || "") + event.delta;
+        if (event?.type === "response.audio.done") {
+          setSpeaking(false);
+          return;
         }
-        return;
-      }
 
-      if (event?.type === "response.function_call_arguments.done") {
-        const callId = event?.call_id;
-        const name = (callId && fnCallNameRef.current[callId]) || event?.name;
-        const argStr = (callId && fnCallBufferRef.current[callId]) || event?.arguments || "";
-        // cleanup
-        if (callId) {
-          delete fnCallBufferRef.current[callId];
-          delete fnCallNameRef.current[callId];
-        }
-        try {
-          console.log("Function call received:", { name, arguments: argStr });
-          const args = argStr ? JSON.parse(argStr) : {};
-          const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
-          if ((name === "show_trend" || args?.metric) && metric) {
-            console.log("Opening trend for metric:", metric);
-            openTrend(metric);
-          } else if (name === "add_education_item") {
-            console.log("Adding heart-healthy diet education item");
-            setShowHeartDietEducation(true);
-          } else if (name === "add_cardiologist") {
-            console.log("Adding extra cardiologist");
-            setShowExtraCardiologist(true);
-          } else if (name === "expand_vitals_panel") {
-            console.log("Expanding vitals panel");
-            setExpandedVitalsPanel(true);
+        // Handle user speech transcription
+        if (event?.type === "conversation.item.input_audio_transcription.completed") {
+          const userText = event?.transcript || "";
+          if (userText.trim()) {
+            setMessages((m) => [...m, { role: "user", content: userText }]);
           }
-        } catch (err) {
-          console.warn("Failed to parse function args", err, argStr);
+          return;
         }
-        return;
-      }
-    });
-    realtimeRef.current = chat;
-    await chat.init(instructions);
-    setListening(true);
-  } catch (e) {
-    console.error("startVoice error", e);
-  }
-};
+
+        // Handle AI text responses
+        if (event?.type === "response.audio_transcript.delta") {
+          const aiText = event?.delta || "";
+          if (aiText.trim()) {
+            setMessages((m) => {
+              const lastMessage = m[m.length - 1];
+              if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.endsWith("...")) {
+                // Update the last assistant message
+                return [...m.slice(0, -1), { ...lastMessage, content: lastMessage.content.slice(0, -3) + aiText }];
+              } else {
+                // Create new assistant message
+                return [...m, { role: "assistant", content: aiText + "..." }];
+              }
+            });
+          }
+          return;
+        }
+
+        // Handle AI response completion
+        if (event?.type === "response.audio_transcript.done") {
+          setMessages((m) => {
+            const lastMessage = m[m.length - 1];
+            if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.endsWith("...")) {
+              return [...m.slice(0, -1), { ...lastMessage, content: lastMessage.content.slice(0, -3) }];
+            }
+            return m;
+          });
+          return;
+        }
+
+        // Tool call name created (some variants use different event names)
+        if (event?.type === "response.function_call.created" || event?.type === "response.tool_call.created") {
+          const callId = event?.call_id || event?.id;
+          if (callId && event?.name) {
+            fnCallNameRef.current[callId] = event.name;
+          }
+          return;
+        }
+
+        // Accumulate function-call arguments
+        if (event?.type === "response.function_call_arguments.delta") {
+          const callId = event?.call_id;
+          if (callId && typeof event?.delta === "string") {
+            fnCallBufferRef.current[callId] = (fnCallBufferRef.current[callId] || "") + event.delta;
+          }
+          return;
+        }
+
+        if (event?.type === "response.function_call_arguments.done") {
+          const callId = event?.call_id;
+          const name = (callId && fnCallNameRef.current[callId]) || event?.name;
+          const argStr = (callId && fnCallBufferRef.current[callId]) || event?.arguments || "";
+          // cleanup
+          if (callId) {
+            delete fnCallBufferRef.current[callId];
+            delete fnCallNameRef.current[callId];
+          }
+          try {
+            console.log("Function call received:", { name, arguments: argStr });
+            const args = argStr ? JSON.parse(argStr) : {};
+            const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
+            if ((name === "show_trend" || args?.metric) && metric) {
+              console.log("Opening trend for metric:", metric);
+              openTrend(metric);
+            } else if (name === "add_education_item") {
+              console.log("Adding heart-healthy diet education item");
+              setShowHeartDietEducation(true);
+            } else if (name === "add_cardiologist") {
+              console.log("Adding extra cardiologist");
+              setShowExtraCardiologist(true);
+            } else if (name === "expand_vitals_panel") {
+              console.log("Expanding vitals panel");
+              setExpandedVitalsPanel(true);
+            }
+          } catch (err) {
+            console.warn("Failed to parse function args", err, argStr);
+          }
+          return;
+        }
+      });
+      realtimeRef.current = chat;
+      await chat.init(instructions);
+      setListening(true);
+    } catch (e) {
+      console.error("startVoice error", e);
+    }
+  };
 
 const stopVoice = () => {
   setListening(false);
