@@ -304,6 +304,7 @@ const startVoice = async () => {
             openTrend(metric);
           } else if (name === "add_education_item") {
             console.log("Adding heart-healthy diet education item");
+            setJourneyInteracted(true); // This is the key fix!
             setShowHeartDietEducation(true);
           } else if (name === "add_cardiologist") {
             console.log("Adding extra cardiologist");
