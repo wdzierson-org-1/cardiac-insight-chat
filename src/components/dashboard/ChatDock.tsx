@@ -415,7 +415,7 @@ useEffect(() => {
           <div className="flex items-center gap-2">
             <div className={cn(
               "w-3 h-3 rounded-full bg-purple-600 transition-all duration-300",
-              !open && speaking && "animate-pulse-opacity"
+              !open && (speaking || listening) && "animate-pulse-opacity"
             )} />
             <span className="font-medium">Journey</span>
             <GripVertical className="h-3 w-3 text-muted-foreground ml-1" />
