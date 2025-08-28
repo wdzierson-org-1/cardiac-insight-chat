@@ -86,8 +86,8 @@ const VRow = ({
     return (
       <div className="rounded-xl border border-[hsl(var(--panel-green))]/40 bg-background/60 p-3 mb-3">
         <div className="flex items-center gap-4">
-          {/* Left side - Label and bar */}
-          <div className="flex-1 min-w-0">
+          {/* Left side - Label and bar (50% width) */}
+          <div className="flex-1 min-w-0 max-w-[50%]">
             <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
               <div className="font-medium truncate">{label}</div>
               <div className="text-muted-foreground truncate">Normal Range {normal}</div>
@@ -107,8 +107,8 @@ const VRow = ({
             </div>
           </div>
           
-          {/* Right side - Small chart */}
-          <div className="w-24 h-12 flex-shrink-0">
+          {/* Right side - Chart (50% width) */}
+          <div className="flex-1 h-16 min-w-0 max-w-[50%]">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsLineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
                 <XAxis dataKey="date" hide />
@@ -117,8 +117,8 @@ const VRow = ({
                   type="monotone" 
                   dataKey="value" 
                   stroke={variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))"} 
-                  strokeWidth={1.5}
-                  dot={{ r: 2, fill: variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))" }}
+                  strokeWidth={2}
+                  dot={{ r: 3, fill: variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))" }}
                 />
               </RechartsLineChart>
             </ResponsiveContainer>
@@ -149,7 +149,7 @@ export const VitalsCard = () => {
   const { expandedVitalsPanel } = useAssistantUI();
 
   return (
-    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'col-span-full' : ''}`} data-card-title>
+    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'relative z-50 col-span-4 lg:col-span-8 xl:col-span-12' : ''}`} data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
