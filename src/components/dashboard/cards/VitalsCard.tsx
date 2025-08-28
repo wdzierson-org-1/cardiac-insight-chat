@@ -129,22 +129,19 @@ const VRow = ({
   }
 
   return (
-    <div className="p-3 mb-3">
-      <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
+    <div className="mb-2">
+      <div className="mb-1 flex items-center justify-between text-xs">
         <div className="font-medium truncate">{label}</div>
         <div className="text-muted-foreground truncate">Normal Range {normal}</div>
       </div>
-      <div className="relative h-6">
-        <div className="absolute inset-0 rounded-full bg-[hsl(var(--panel-gold))]/70" />
-        <div className="absolute left-[18%] right-[18%] top-0 bottom-0 rounded-full bg-[hsl(var(--panel-green))]" />
+      <div className="relative h-4">
+        <div className="absolute inset-0 rounded-full bg-muted/40" />
+        <div className="absolute left-[18%] right-[18%] top-0 bottom-0 rounded-full bg-muted" />
         <div className="absolute inset-y-0" style={{ left: indicatorLeft }}>
-          <div className="h-full border-l border-dashed border-muted-foreground" />
+          <div className="h-full border-l border-dashed border-muted-foreground/50" />
         </div>
-        <div className="absolute top-1/2 -translate-y-1/2 right-2">
-          <span className={badgeClasses}>
-            {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
-            {value}
-          </span>
+        <div className="absolute top-1/2 -translate-y-1/2" style={{ left: indicatorLeft }}>
+          <div className={`w-3 h-3 rounded-full ${variant === "warn" ? "bg-destructive" : "bg-primary"} -translate-x-1/2 border-2 border-background`} />
         </div>
       </div>
     </div>
