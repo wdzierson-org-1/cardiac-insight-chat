@@ -49,7 +49,10 @@ export const EnhancedCommunityCardiologistCard = () => {
     initials: "SR",
   };
 
-  const displayDoctors = showExtraCardiologist ? [...doctors, extraDoctor] : doctors;
+  // Replace the last doctor with the extra doctor when showing extra cardiologist
+  const displayDoctors = showExtraCardiologist 
+    ? [...doctors.slice(0, 2), extraDoctor] 
+    : doctors;
 
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500" data-card-title>

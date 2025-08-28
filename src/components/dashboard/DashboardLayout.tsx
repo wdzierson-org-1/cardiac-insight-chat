@@ -6,7 +6,7 @@ import { LipidPanelCard } from "./cards/LipidPanelCard";
 import { EnhancedLipidPanelCard } from "./cards/EnhancedLipidPanelCard";
 import { ExpandedLipidPanelCard } from "./cards/ExpandedLipidPanelCard";
 import { VitalsCard } from "./cards/VitalsCard";
-import { ExpandedVitalsCard } from "./cards/ExpandedVitalsCard";
+
 import { EducationCard } from "./cards/EducationCard";
 import { EnhancedEducationCard } from "./cards/EnhancedEducationCard";
 import { CommunityCardiologistCard } from "./cards/CommunityCardiologistCard";
@@ -46,8 +46,8 @@ const DashboardContent = () => {
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-300">
               {showHeartDietEducation ? <EnhancedEducationCard /> : <EducationCard />}
             </div>
-            <div className={`transition-all duration-500 delay-400 ${expandedVitalsPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
-              {expandedVitalsPanel ? <ExpandedVitalsCard /> : <VitalsCard />}
+            <div className="transition-all duration-500 delay-400">
+              <VitalsCard />
             </div>
             <div className={`transition-all duration-500 delay-500 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
               {expandedLipidPanel ? <ExpandedLipidPanelCard /> : (journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />)}
