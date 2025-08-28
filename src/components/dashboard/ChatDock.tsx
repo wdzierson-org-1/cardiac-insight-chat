@@ -294,12 +294,13 @@ const onSend = async (customText?: string) => {
           if (aiText.trim()) {
             setMessages((m) => {
               const lastMessage = m[m.length - 1];
-              if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.endsWith("...")) {
-                // Update the last assistant message
-                return [...m.slice(0, -1), { ...lastMessage, content: lastMessage.content.slice(0, -3) + aiText }];
+              if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.includes("🎤")) {
+                // Update the existing streaming message
+                const currentContent = lastMessage.content.replace(" 🎤", "");
+                return [...m.slice(0, -1), { ...lastMessage, content: currentContent + aiText + " 🎤" }];
               } else {
                 // Create new assistant message
-                return [...m, { role: "assistant", content: aiText + "..." }];
+                return [...m, { role: "assistant", content: aiText + " 🎤" }];
               }
             });
           }
@@ -310,8 +311,8 @@ const onSend = async (customText?: string) => {
         if (event?.type === "response.audio_transcript.done") {
           setMessages((m) => {
             const lastMessage = m[m.length - 1];
-            if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.endsWith("...")) {
-              return [...m.slice(0, -1), { ...lastMessage, content: lastMessage.content.slice(0, -3) }];
+            if (lastMessage && lastMessage.role === "assistant" && lastMessage.content.includes("🎤")) {
+              return [...m.slice(0, -1), { ...lastMessage, content: lastMessage.content.replace(" 🎤", "") }];
             }
             return m;
           });
