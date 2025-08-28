@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, MoreHorizontal } from "lucide-react";
-import doc1 from "@/assets/patient-avatar.jpg";
-import doc2 from "@/assets/patient-avatar.jpg";
+import drAshaMenon from "@/assets/dr-asha-menon.jpg";
+import drLeahWhitman from "@/assets/dr-leah-whitman.jpg";
 
 export const CommunityCardiologistCard = () => {
   const doctors = [
@@ -13,7 +13,7 @@ export const CommunityCardiologistCard = () => {
       org: "Seaside Heart & Vascular",
       blurb:
         "Provides comprehensive cardiac care with a focus on hypertension and lipid disorders.",
-      img: doc1,
+      img: drAshaMenon,
       initials: "AM",
     },
     {
@@ -22,7 +22,7 @@ export const CommunityCardiologistCard = () => {
       org: "Clearview Cardiology Associates",
       blurb:
         "Offers community-based cardiac care with an emphasis on outcomes and follow-up.",
-      img: doc2,
+      img: drLeahWhitman,
       initials: "LW",
     },
   ];
