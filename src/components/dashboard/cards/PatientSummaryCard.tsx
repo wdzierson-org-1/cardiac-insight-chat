@@ -3,10 +3,15 @@ import { Badge } from "@/components/ui/badge";
 import patientAvatar from "@/assets/patient-avatar.jpg";
 
 export const PatientSummaryCard = () => {
+  const now = new Date();
+  const formatted = new Intl.DateTimeFormat(undefined, {
+    weekday: "long", month: "long", day: "2-digit",
+  }).format(now);
+
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" aria-label="Patient Summary" data-card-title>
       <CardHeader>
-        <CardTitle>Thursday, June 12</CardTitle>
+        <CardTitle>{formatted}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4">
