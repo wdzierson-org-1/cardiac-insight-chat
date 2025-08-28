@@ -24,13 +24,6 @@ export const EducationCard = () => {
               <div className="text-xs text-muted-foreground">Practical guidance on reducing swelling and weight gain through sodium and fluid management.</div>
             </label>
           </li>
-          <li className="flex items-start gap-2">
-            <Checkbox id="edu-3" aria-label="Recognizing Heart Failure" />
-            <label htmlFor="edu-3" className="leading-snug">
-              <a href="#" className="underline">Recognizing Heart Failure: When to Call Doctor</a>
-              <div className="text-xs text-muted-foreground">Educational checklist on signs of acute decompensation.</div>
-            </label>
-          </li>
         </ul>
       </CardContent>
       <CardFooter className="justify-end gap-2">
