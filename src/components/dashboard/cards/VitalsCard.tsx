@@ -84,31 +84,45 @@ const VRow = ({
 
   if (expanded && data) {
     return (
-      <div className="rounded-xl border border-[hsl(var(--panel-blue))]/40 bg-background/60 p-4 mb-3">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h4 className="font-medium text-sm">{label}</h4>
-            <p className="text-xs text-muted-foreground">Normal: {normal}</p>
+      <div className="rounded-xl border border-[hsl(var(--panel-green))]/40 bg-background/60 p-3 mb-3">
+        <div className="flex items-center gap-4">
+          {/* Left side - Label and bar */}
+          <div className="flex-1 min-w-0">
+            <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
+              <div className="font-medium truncate">{label}</div>
+              <div className="text-muted-foreground truncate">Normal Range {normal}</div>
+            </div>
+            <div className="relative h-6">
+              <div className="absolute inset-0 rounded-full bg-[hsl(var(--panel-gold))]/70" />
+              <div className="absolute left-[18%] right-[18%] top-0 bottom-0 rounded-full bg-[hsl(var(--panel-green))]" />
+              <div className="absolute inset-y-0" style={{ left: indicatorLeft }}>
+                <div className="h-full border-l border-dashed border-muted-foreground" />
+              </div>
+              <div className="absolute top-1/2 -translate-y-1/2 right-2">
+                <span className={badgeClasses}>
+                  {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
+                  {value}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className={`${variant === "warn" ? "bg-destructive/90 text-destructive-foreground" : "bg-[hsl(var(--panel-green))] text-foreground"} rounded-full px-2 py-1 text-xs font-medium`}>
-            {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
-            {value} {label.includes("Weight") ? "lbs" : label.includes("BMI") ? "" : label.includes("SpO2") ? "%" : label.includes("BPM") ? "bpm" : "mmHg"}
+          
+          {/* Right side - Small chart */}
+          <div className="w-24 h-12 flex-shrink-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <RechartsLineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+                <XAxis dataKey="date" hide />
+                <YAxis hide />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke={variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))"} 
+                  strokeWidth={1.5}
+                  dot={{ r: 2, fill: variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))" }}
+                />
+              </RechartsLineChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-        <div className="h-20">
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsLineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <XAxis dataKey="date" hide />
-              <YAxis hide />
-              <Line 
-                type="monotone" 
-                dataKey="value" 
-                stroke={variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))"} 
-                strokeWidth={2}
-                dot={{ r: 3, fill: variant === "warn" ? "hsl(var(--destructive))" : "hsl(var(--panel-green))" }}
-              />
-            </RechartsLineChart>
-          </ResponsiveContainer>
         </div>
       </div>
     );
@@ -141,7 +155,7 @@ export const VitalsCard = () => {
   const { expandedVitalsPanel } = useAssistantUI();
 
   return (
-    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`} data-card-title>
+    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'col-span-12 md:col-span-8 lg:col-span-6 xl:col-span-6' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`} data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -166,7 +180,7 @@ export const VitalsCard = () => {
         )}
         
         {expandedVitalsPanel ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
             <VRow label="Weight" value={202} normal="160-180 lbs" variant="warn" data={weightData} expanded />
             <VRow label="BMI" value={34} normal="18.5-24.9" variant="warn" data={bmiData} expanded />
             <VRow label="SpO2" value={89} normal="≥94%" variant="warn" data={spo2Data} expanded />
