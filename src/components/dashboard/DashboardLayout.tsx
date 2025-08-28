@@ -33,7 +33,7 @@ const DashboardContent = () => {
       <div className="col-span-11">
         <Header />
         <main className="px-4 md:px-6 py-6 bg-subtle-grid">
-          <section className="grid grid-cols-12 gap-5 md:gap-6">
+          <section className="relative grid grid-cols-12 gap-5 md:gap-6">
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500">
               <PatientSummaryCard />
             </div>
@@ -46,10 +46,10 @@ const DashboardContent = () => {
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-300">
               {showHeartDietEducation ? <EnhancedEducationCard /> : <EducationCard />}
             </div>
-            <div className="transition-all duration-500 delay-400">
+            <div className={`transition-all duration-500 delay-400 ${expandedVitalsPanel ? 'absolute z-50 top-0 left-0 right-0' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
               <VitalsCard />
             </div>
-            <div className={`transition-all duration-500 delay-500 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
+            <div className={`transition-all duration-500 delay-500 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'} ${expandedVitalsPanel ? 'opacity-50' : 'opacity-100'}`}>
               {expandedLipidPanel ? <ExpandedLipidPanelCard /> : (journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />)}
             </div>
           </section>

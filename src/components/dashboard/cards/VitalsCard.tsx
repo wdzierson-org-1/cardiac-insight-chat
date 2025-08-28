@@ -129,23 +129,17 @@ const VRow = ({
   }
 
   return (
-    <div className="rounded-lg border bg-background/40 p-3 mb-2">
+    <div className="mb-3">
       <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
-        <div className="font-medium truncate">{label}</div>
-        <div className="text-muted-foreground truncate">Normal Range {normal}</div>
+        <div className="font-medium text-muted-foreground">{label}</div>
+        <div className="text-xs font-medium">
+          {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
+          {value}
+        </div>
       </div>
-      <div className="relative h-4">
-        <div className="absolute inset-0 rounded-full bg-muted/50" />
-        <div className="absolute left-[20%] right-[20%] top-0 bottom-0 rounded-full bg-muted-foreground/20" />
-        <div className="absolute inset-y-0" style={{ left: indicatorLeft }}>
-          <div className="h-full border-l border-dashed border-muted-foreground/50" />
-        </div>
-        <div className="absolute top-1/2 -translate-y-1/2 right-2">
-          <span className={badgeClasses}>
-            {variant === "warn" && (label.includes("SpO2") ? "LOW " : "HIGH ")}
-            {value}
-          </span>
-        </div>
+      <Progress value={75} variant={variant} />
+      <div className="text-xs text-muted-foreground mt-1 text-center">
+        Normal Range {normal}
       </div>
     </div>
   );
@@ -155,7 +149,7 @@ export const VitalsCard = () => {
   const { expandedVitalsPanel } = useAssistantUI();
 
   return (
-    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'col-span-12 md:col-span-8 lg:col-span-6 xl:col-span-6' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`} data-card-title>
+    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'w-full max-w-4xl mx-auto' : ''}`} data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
