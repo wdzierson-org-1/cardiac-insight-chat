@@ -129,16 +129,16 @@ const VRow = ({
   }
 
   return (
-    <div className="rounded-xl border border-[hsl(var(--panel-green))]/40 bg-background/60 p-3 mb-3">
+    <div className="rounded-lg border bg-background/40 p-3 mb-2">
       <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
         <div className="font-medium truncate">{label}</div>
         <div className="text-muted-foreground truncate">Normal Range {normal}</div>
       </div>
-      <div className="relative h-6">
-        <div className="absolute inset-0 rounded-full bg-[hsl(var(--panel-gold))]/70" />
-        <div className="absolute left-[18%] right-[18%] top-0 bottom-0 rounded-full bg-[hsl(var(--panel-green))]" />
+      <div className="relative h-4">
+        <div className="absolute inset-0 rounded-full bg-muted/50" />
+        <div className="absolute left-[20%] right-[20%] top-0 bottom-0 rounded-full bg-muted-foreground/20" />
         <div className="absolute inset-y-0" style={{ left: indicatorLeft }}>
-          <div className="h-full border-l border-dashed border-muted-foreground" />
+          <div className="h-full border-l border-dashed border-muted-foreground/50" />
         </div>
         <div className="absolute top-1/2 -translate-y-1/2 right-2">
           <span className={badgeClasses}>
