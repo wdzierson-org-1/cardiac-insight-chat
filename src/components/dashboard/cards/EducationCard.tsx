@@ -1,12 +1,16 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { BookOpen } from "lucide-react";
 
 export const EducationCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]">
-        <CardTitle className="text-base md:text-lg">Patient Education</CardTitle>
+        <div className="flex items-center gap-2">
+          <BookOpen className="h-4 w-4" aria-hidden />
+          <CardTitle className="text-base md:text-lg">Patient Education</CardTitle>
+        </div>
       </CardHeader>
       <CardContent className="text-sm">
         <ul className="space-y-3">

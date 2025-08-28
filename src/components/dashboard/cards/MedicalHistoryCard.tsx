@@ -1,10 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileText } from "lucide-react";
 
 export const MedicalHistoryCard = () => {
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4" data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
-        <CardTitle className="text-base md:text-lg">Medical History</CardTitle>
+        <div className="flex items-center gap-2">
+          <FileText className="h-4 w-4" aria-hidden />
+          <CardTitle className="text-base md:text-lg">Medical History</CardTitle>
+        </div>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4 text-sm">
         <div>
