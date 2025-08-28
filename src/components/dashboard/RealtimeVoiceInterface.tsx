@@ -42,14 +42,14 @@ const RealtimeVoiceInterface: React.FC = () => {
   useEffect(() => () => end(), []);
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3">
+    <div className="fixed top-8 right-8 z-40 flex items-center gap-3">
       {!isConnected ? (
-        <Button onClick={start} className="bg-primary text-primary-foreground">
+        <Button onClick={start} className="bg-background text-foreground border border-foreground hover:bg-foreground hover:text-background">
           Start Conversational Voice
         </Button>
       ) : (
         <div className="flex items-center gap-3">
-          <Button variant="secondary" onClick={end}>End</Button>
+          <Button variant="outline" onClick={end} className="bg-background text-foreground border-foreground hover:bg-foreground hover:text-background">End</Button>
           {speaking && (
             <span className="animate-pulse text-muted-foreground">Jenny speaking…</span>
           )}
