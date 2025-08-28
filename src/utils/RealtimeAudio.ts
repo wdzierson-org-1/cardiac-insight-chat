@@ -75,7 +75,7 @@ export class RealtimeChat {
                   {
                     type: "function",
                     name: "add_education_item",
-                    description: "Add a heart-healthy diet education item to the Patient Education panel.",
+                    description: "Add a heart-healthy diet education item to the Patient Education panel. Call this when user requests to add patient education, show heart healthy diet education, add education item, add diet education, show additional education materials, or similar requests about patient education or diet guidance.",
                     parameters: {
                       type: "object",
                       properties: {},

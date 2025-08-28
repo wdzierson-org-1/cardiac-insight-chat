@@ -296,15 +296,20 @@ const startVoice = async () => {
           delete fnCallNameRef.current[callId];
         }
         try {
+          console.log("Function call received:", { name, arguments: argStr });
           const args = argStr ? JSON.parse(argStr) : {};
           const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
           if ((name === "show_trend" || args?.metric) && metric) {
+            console.log("Opening trend for metric:", metric);
             openTrend(metric);
           } else if (name === "add_education_item") {
+            console.log("Adding heart-healthy diet education item");
             setShowHeartDietEducation(true);
           } else if (name === "add_cardiologist") {
+            console.log("Adding extra cardiologist");
             setShowExtraCardiologist(true);
           } else if (name === "expand_lipid_panel") {
+            console.log("Expanding lipid panel");
             setExpandedLipidPanel(true);
           }
         } catch (err) {
