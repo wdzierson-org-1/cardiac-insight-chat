@@ -53,7 +53,7 @@ const recognitionRef = useRef<any>(null);
 const listeningRef = useRef(false);
 const speakingRef = useRef(false);
 const containerRef = useRef<HTMLDivElement>(null);
-const { showTrendingVitals, setJourneyInteracted } = useAssistantUI();
+const { showTrendingVitals, setJourneyInteracted, setShowHeartDietEducation, setShowExtraCardiologist, setExpandedLipidPanel } = useAssistantUI();
 const audioRef = useRef<HTMLAudioElement | null>(null);
 const recognizingRef = useRef(false);
 const restartTimerRef = useRef<number | null>(null);
@@ -300,6 +300,12 @@ const startVoice = async () => {
           const metric = args?.metric as "triglycerides" | "cholesterol" | "weight" | undefined;
           if ((name === "show_trend" || args?.metric) && metric) {
             openTrend(metric);
+          } else if (name === "add_education_item") {
+            setShowHeartDietEducation(true);
+          } else if (name === "add_cardiologist") {
+            setShowExtraCardiologist(true);
+          } else if (name === "expand_lipid_panel") {
+            setExpandedLipidPanel(true);
           }
         } catch (err) {
           console.warn("Failed to parse function args", err, argStr);

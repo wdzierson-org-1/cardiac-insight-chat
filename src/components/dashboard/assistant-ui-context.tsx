@@ -6,6 +6,12 @@ interface AssistantUIState {
   closeTrendingVitals: () => void;
   journeyInteracted: boolean;
   setJourneyInteracted: (interacted: boolean) => void;
+  showHeartDietEducation: boolean;
+  setShowHeartDietEducation: (show: boolean) => void;
+  showExtraCardiologist: boolean;
+  setShowExtraCardiologist: (show: boolean) => void;
+  expandedLipidPanel: boolean;
+  setExpandedLipidPanel: (expanded: boolean) => void;
 }
 
 const AssistantUIContext = createContext<AssistantUIState | undefined>(undefined);
@@ -13,6 +19,9 @@ const AssistantUIContext = createContext<AssistantUIState | undefined>(undefined
 export const AssistantUIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [trendingVitalsOpen, setTrendingVitalsOpen] = useState(false);
   const [journeyInteracted, setJourneyInteracted] = useState(false);
+  const [showHeartDietEducation, setShowHeartDietEducation] = useState(false);
+  const [showExtraCardiologist, setShowExtraCardiologist] = useState(false);
+  const [expandedLipidPanel, setExpandedLipidPanel] = useState(false);
 
   const showTrendingVitals = useCallback(() => setTrendingVitalsOpen(true), []);
   const closeTrendingVitals = useCallback(() => setTrendingVitalsOpen(false), []);
@@ -23,7 +32,13 @@ export const AssistantUIProvider: React.FC<{ children: React.ReactNode }> = ({ c
       showTrendingVitals, 
       closeTrendingVitals, 
       journeyInteracted, 
-      setJourneyInteracted 
+      setJourneyInteracted,
+      showHeartDietEducation,
+      setShowHeartDietEducation,
+      showExtraCardiologist,
+      setShowExtraCardiologist,
+      expandedLipidPanel,
+      setExpandedLipidPanel
     }}>
       {children}
     </AssistantUIContext.Provider>

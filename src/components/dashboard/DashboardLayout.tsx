@@ -4,6 +4,7 @@ import { PatientSummaryCard } from "./cards/PatientSummaryCard";
 import { MedicalHistoryCard } from "./cards/MedicalHistoryCard";
 import { LipidPanelCard } from "./cards/LipidPanelCard";
 import { EnhancedLipidPanelCard } from "./cards/EnhancedLipidPanelCard";
+import { ExpandedLipidPanelCard } from "./cards/ExpandedLipidPanelCard";
 import { VitalsCard } from "./cards/VitalsCard";
 import { EducationCard } from "./cards/EducationCard";
 import { EnhancedEducationCard } from "./cards/EnhancedEducationCard";
@@ -15,7 +16,7 @@ import { TrendingVitalsPanel } from "./TrendingVitalsPanel";
 import { VoiceAssistant } from "./VoiceAssistant";
 
 const DashboardContent = () => {
-  const { journeyInteracted } = useAssistantUI();
+  const { journeyInteracted, expandedLipidPanel } = useAssistantUI();
 
   return (
     <div className="min-h-screen grid grid-cols-12">
@@ -38,10 +39,10 @@ const DashboardContent = () => {
             <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-300">
               {journeyInteracted ? <EnhancedEducationCard /> : <EducationCard />}
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-400">
-              {journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />}
+            <div className={`transition-all duration-500 delay-400 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
+              {expandedLipidPanel ? <ExpandedLipidPanelCard /> : (journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />)}
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-500">
+            <div className={`transition-all duration-500 delay-500 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
               <VitalsCard />
             </div>
           </section>

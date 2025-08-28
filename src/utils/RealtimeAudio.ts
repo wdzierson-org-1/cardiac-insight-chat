@@ -72,6 +72,33 @@ export class RealtimeChat {
                       required: ["metric"],
                     },
                   },
+                  {
+                    type: "function",
+                    name: "add_education_item",
+                    description: "Add a heart-healthy diet education item to the Patient Education panel.",
+                    parameters: {
+                      type: "object",
+                      properties: {},
+                    },
+                  },
+                  {
+                    type: "function", 
+                    name: "add_cardiologist",
+                    description: "Add another cardiologist to the Community Cardiologist Matches panel.",
+                    parameters: {
+                      type: "object",
+                      properties: {},
+                    },
+                  },
+                  {
+                    type: "function",
+                    name: "expand_lipid_panel", 
+                    description: "Expand the lipid panel to show individual trend charts for each lipid metric over the last year.",
+                    parameters: {
+                      type: "object",
+                      properties: {},
+                    },
+                  },
                 ],
                 tool_choice: "auto",
               },

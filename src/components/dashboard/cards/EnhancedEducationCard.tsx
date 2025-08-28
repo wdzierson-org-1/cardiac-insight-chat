@@ -1,8 +1,11 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAssistantUI } from "../assistant-ui-context";
 
 export const EnhancedEducationCard = () => {
+  const { showHeartDietEducation } = useAssistantUI();
+  
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500" data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-green))] text-[hsl(var(--panel-foreground))]">
@@ -38,6 +41,15 @@ export const EnhancedEducationCard = () => {
               <div className="text-xs text-muted-foreground">Understanding your medications and the importance of taking them as prescribed.</div>
             </label>
           </li>
+          {showHeartDietEducation && (
+            <li className="flex items-start gap-2 animate-fade-in">
+              <Checkbox id="edu-5" aria-label="Heart-Healthy Diet" />
+              <label htmlFor="edu-5" className="leading-snug">
+                <a href="#" className="underline">Heart-Healthy Diet: DASH Diet for Heart Failure</a>
+                <div className="text-xs text-muted-foreground">Nutritional guidelines for reducing sodium intake and supporting heart health through diet.</div>
+              </label>
+            </li>
+          )}
         </ul>
       </CardContent>
       <CardFooter className="justify-end gap-2">

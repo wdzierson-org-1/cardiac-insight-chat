@@ -2,10 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, MoreHorizontal } from "lucide-react";
+import { useAssistantUI } from "../assistant-ui-context";
 import doc1 from "@/assets/patient-avatar.jpg";
 import doc2 from "@/assets/patient-avatar.jpg";
 
 export const EnhancedCommunityCardiologistCard = () => {
+  const { showExtraCardiologist } = useAssistantUI();
+  
   const doctors = [
     {
       name: "Dr. Asha Menon, MD",
@@ -36,6 +39,18 @@ export const EnhancedCommunityCardiologistCard = () => {
     },
   ];
 
+  const extraDoctor = {
+    name: "Dr. Sarah Rodriguez, MD",
+    specialty: "Heart Failure Specialist",
+    org: "Pacific Cardiovascular Center",
+    blurb:
+      "Board-certified heart failure specialist with expertise in advanced therapies and device management.",
+    img: doc2,
+    initials: "SR",
+  };
+
+  const displayDoctors = showExtraCardiologist ? [...doctors, extraDoctor] : doctors;
+
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500" data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-gold))] text-[hsl(var(--panel-foreground))]">
@@ -55,11 +70,11 @@ export const EnhancedCommunityCardiologistCard = () => {
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        {doctors.map((d, i) => (
+        {displayDoctors.map((d, i) => (
           <div
             key={i}
             className={
-              "flex items-start gap-4 p-4 " + (i > 0 ? "border-t" : "")
+              "flex items-start gap-4 p-4 " + (i > 0 ? "border-t" : "") + (i === displayDoctors.length - 1 && showExtraCardiologist ? " animate-fade-in" : "")
             }
           >
             <Avatar className="h-14 w-14 shadow">
