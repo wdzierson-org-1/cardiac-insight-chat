@@ -27,29 +27,13 @@ export const EnhancedEducationCard = () => {
               <div className="text-xs text-muted-foreground">Practical guidance on reducing swelling and weight gain through sodium and fluid management.</div>
             </label>
           </li>
-          <li className="flex items-start gap-2">
-            <Checkbox id="edu-3" aria-label="Recognizing Heart Failure" />
+          <li className={`flex items-start gap-2 transition-all duration-500 ${showHeartDietEducation ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <Checkbox id="edu-3" aria-label="Heart-Healthy Diet" />
             <label htmlFor="edu-3" className="leading-snug">
-              <a href="#" className="underline">Recognizing Heart Failure: When to Call Doctor</a>
-              <div className="text-xs text-muted-foreground">Educational checklist on signs of acute decompensation.</div>
+              <a href="#" className="underline">Heart-Healthy Diet: DASH Diet for Heart Failure</a>
+              <div className="text-xs text-muted-foreground">Nutritional guidelines for reducing sodium intake and supporting heart health through diet.</div>
             </label>
           </li>
-          <li className="flex items-start gap-2">
-            <Checkbox id="edu-4" aria-label="Medication Adherence" />
-            <label htmlFor="edu-4" className="leading-snug">
-              <a href="#" className="underline">Heart Failure Medications: ACE Inhibitors & Beta Blockers</a>
-              <div className="text-xs text-muted-foreground">Understanding your medications and the importance of taking them as prescribed.</div>
-            </label>
-          </li>
-          {showHeartDietEducation && (
-            <li className="flex items-start gap-2 animate-fade-in">
-              <Checkbox id="edu-5" aria-label="Heart-Healthy Diet" />
-              <label htmlFor="edu-5" className="leading-snug">
-                <a href="#" className="underline">Heart-Healthy Diet: DASH Diet for Heart Failure</a>
-                <div className="text-xs text-muted-foreground">Nutritional guidelines for reducing sodium intake and supporting heart health through diet.</div>
-              </label>
-            </li>
-          )}
         </ul>
       </CardContent>
       <CardFooter className="justify-end gap-2">
