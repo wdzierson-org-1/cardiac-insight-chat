@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, MoreHorizontal } from "lucide-react";
 import { useAssistantUI } from "../assistant-ui-context";
 import doctorFemale from "@/assets/doctor-female.png";
-import maleDoctor from "@/assets/Male.png";
+import maleDoctor from "@/assets/doctor-male.png";
 
 export const EnhancedCommunityCardiologistCard = () => {
   const { showExtraCardiologist } = useAssistantUI();
