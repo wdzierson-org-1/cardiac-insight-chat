@@ -129,7 +129,7 @@ const VRow = ({
   }
 
   return (
-    <div className="rounded-xl border border-[hsl(var(--panel-green))]/40 bg-background/60 p-3 mb-3">
+    <div className="p-3 mb-3">
       <div className="mb-2 flex items-center justify-between text-xs md:text-sm">
         <div className="font-medium truncate">{label}</div>
         <div className="text-muted-foreground truncate">Normal Range {normal}</div>
