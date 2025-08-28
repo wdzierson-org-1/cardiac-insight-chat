@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Mic, Send, Brain } from "lucide-react";
+import { Mic, Send, ChevronUp, ChevronDown } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChat } from "@/utils/RealtimeAudio";
@@ -346,16 +346,19 @@ const stopVoice = () => {
     <div className={cn("fixed left-4 bottom-4 z-30 animate-slide-in-left")}
       aria-live="polite" aria-label="Clinical Assistant Dock">
       <div className={cn(
-        "w-[350px] sm:w-[380px] rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",
-        open ? "h-[460px]" : "h-14",
+        "rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",
+        open ? "w-[350px] sm:w-[380px] h-[460px]" : "w-[280px] h-12",
       )}>
         <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bubble))]">
           <div className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-[hsl(var(--brand-2))]" />
+            <div className={cn(
+              "w-3 h-3 rounded-full bg-purple-600 transition-all duration-300",
+              !open && speaking && "animate-pulse-opacity"
+            )} />
             <span className="font-medium">Journey</span>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-label="Toggle chat">
-            {open ? "Minimize" : "Open"}
+            {open ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
           </Button>
         </div>
 
@@ -368,8 +371,17 @@ const stopVoice = () => {
             </div>
             <div className="p-3 border-t border-[hsl(var(--chat-border))]">
               <div className="flex items-center gap-2">
-                <Button type="button" variant={listening ? "secondary" : "outline"} size="icon" onClick={listening ? stopVoice : startVoice} aria-label="Voice input">
-                  <Mic className={cn("h-4 w-4", listening && "animate-pulse")}/>
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  onClick={listening ? stopVoice : startVoice} 
+                  aria-label="Voice input"
+                  className={cn(
+                    "bg-purple-600 hover:bg-purple-700 text-white border-0",
+                    listening && "animate-pulse"
+                  )}
+                >
+                  <Mic className="h-4 w-4" />
                 </Button>
                 <Input
                   value={input}
