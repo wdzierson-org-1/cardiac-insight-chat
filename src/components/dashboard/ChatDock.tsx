@@ -53,7 +53,7 @@ const recognitionRef = useRef<any>(null);
 const listeningRef = useRef(false);
 const speakingRef = useRef(false);
 const containerRef = useRef<HTMLDivElement>(null);
-const { showTrendingVitals } = useAssistantUI();
+const { showTrendingVitals, setJourneyInteracted } = useAssistantUI();
 const audioRef = useRef<HTMLAudioElement | null>(null);
 const recognizingRef = useRef(false);
 const restartTimerRef = useRef<number | null>(null);
@@ -179,6 +179,10 @@ useEffect(() => {
 const onSend = async (customText?: string) => {
   const text = (customText ?? input).trim();
   if (!text) return;
+  
+  // Mark that user has interacted with Journey
+  setJourneyInteracted(true);
+  
   const user = { role: "user" as const, content: text };
   setMessages((m) => [...m, user]);
   setInput("");
