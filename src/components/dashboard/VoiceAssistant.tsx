@@ -106,7 +106,7 @@ export const VoiceAssistant: React.FC = () => {
 
   return (
     <>
-      <div className="fixed top-6 right-6 z-40">
+      <div className="fixed top-6 right-20 z-40">
         <Button
           onClick={recording ? stopRecording : startRecording}
           size="lg"
