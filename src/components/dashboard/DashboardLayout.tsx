@@ -34,22 +34,22 @@ const DashboardContent = () => {
         <Header />
         <main className="px-4 md:px-6 py-6 bg-subtle-grid">
           <section className="relative grid grid-cols-12 gap-5 md:gap-6">
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500">
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 animate-fade-in [animation-delay:0.6s] opacity-0 [animation-fill-mode:forwards]">
               <PatientSummaryCard />
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-100">
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 animate-fade-in [animation-delay:0.7s] opacity-0 [animation-fill-mode:forwards]">
               <MedicalHistoryCard />
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-200">
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 animate-fade-in [animation-delay:0.8s] opacity-0 [animation-fill-mode:forwards]">
               {showExtraCardiologist ? <EnhancedCommunityCardiologistCard /> : <CommunityCardiologistCard />}
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500 delay-300">
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 animate-fade-in [animation-delay:0.9s] opacity-0 [animation-fill-mode:forwards]">
               {showHeartDietEducation ? <EnhancedEducationCard /> : <EducationCard />}
             </div>
-            <div className={`transition-all duration-500 delay-400 ${expandedVitalsPanel ? 'absolute z-50 top-0 left-0 right-0' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
+            <div className={`animate-fade-in [animation-delay:1.0s] opacity-0 [animation-fill-mode:forwards] ${expandedVitalsPanel ? 'absolute z-50 top-0 left-0 right-0' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'}`}>
               <VitalsCard />
             </div>
-            <div className={`transition-all duration-500 delay-500 ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'} ${expandedVitalsPanel ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`animate-fade-in [animation-delay:1.1s] opacity-0 [animation-fill-mode:forwards] ${expandedLipidPanel ? 'col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4'} ${expandedVitalsPanel ? 'opacity-50' : ''}`}>
               {expandedLipidPanel ? <ExpandedLipidPanelCard /> : (journeyInteracted ? <EnhancedLipidPanelCard /> : <LipidPanelCard />)}
             </div>
           </section>

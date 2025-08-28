@@ -343,7 +343,7 @@ const stopVoice = () => {
   recognizingRef.current = false;
 };
   return (
-    <div className={cn("fixed left-4 bottom-4 z-30 animate-slide-in-left")}
+    <div className={cn("fixed left-4 bottom-4 z-30 animate-slide-in-left [animation-delay:1.2s] opacity-0 [animation-fill-mode:forwards]")}
       aria-live="polite" aria-label="Clinical Assistant Dock">
       <div className={cn(
         "rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",

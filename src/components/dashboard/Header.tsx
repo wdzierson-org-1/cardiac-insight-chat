@@ -8,7 +8,7 @@ export const Header = () => {
   }).format(now);
 
   return (
-    <header className={cn("sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b")}
+    <header className={cn("sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b animate-slide-in-down [animation-delay:0.4s] opacity-0 [animation-fill-mode:forwards]")}
       aria-label="Appointment Dashboard Header">
       <div className="px-4 md:px-6 py-3 flex items-center justify-between gap-4">
         <div className="space-y-1">

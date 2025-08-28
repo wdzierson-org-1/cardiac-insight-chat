@@ -58,7 +58,7 @@ const NavIcon = ({ icon: Icon, active = false, label, variant }: { icon: any; ac
 
 export const Sidebar = () => {
   return (
-    <aside className="hidden md:flex md:flex-col gap-3 p-3 w-16 sticky top-0 h-screen border-r bg-sidebar text-sidebar-foreground">
+    <aside className="hidden md:flex md:flex-col gap-3 p-3 w-16 sticky top-0 h-screen border-r bg-sidebar text-sidebar-foreground animate-slide-in-left [animation-delay:0.4s] opacity-0 [animation-fill-mode:forwards]">
       <div className="flex flex-col items-center gap-3">
         <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-[hsl(var(--brand))] to-[hsl(var(--brand-2))] shadow flex items-center justify-center text-primary-foreground font-bold">
           PCP
