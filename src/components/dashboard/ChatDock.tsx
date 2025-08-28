@@ -53,7 +53,14 @@ const recognitionRef = useRef<any>(null);
 const listeningRef = useRef(false);
 const speakingRef = useRef(false);
 const containerRef = useRef<HTMLDivElement>(null);
-const { showTrendingVitals, setJourneyInteracted, setShowHeartDietEducation, setShowExtraCardiologist, setExpandedLipidPanel } = useAssistantUI();
+const { 
+  showTrendingVitals, 
+  setJourneyInteracted, 
+  setShowHeartDietEducation, 
+  setShowExtraCardiologist, 
+  setExpandedLipidPanel,
+  setExpandedVitalsPanel
+} = useAssistantUI();
 const audioRef = useRef<HTMLAudioElement | null>(null);
 const recognizingRef = useRef(false);
 const restartTimerRef = useRef<number | null>(null);
@@ -308,9 +315,9 @@ const startVoice = async () => {
           } else if (name === "add_cardiologist") {
             console.log("Adding extra cardiologist");
             setShowExtraCardiologist(true);
-          } else if (name === "expand_lipid_panel") {
-            console.log("Expanding lipid panel");
-            setExpandedLipidPanel(true);
+          } else if (name === "expand_vitals_panel") {
+            console.log("Expanding vitals panel");
+            setExpandedVitalsPanel(true);
           }
         } catch (err) {
           console.warn("Failed to parse function args", err, argStr);

@@ -12,6 +12,8 @@ interface AssistantUIState {
   setShowExtraCardiologist: (show: boolean) => void;
   expandedLipidPanel: boolean;
   setExpandedLipidPanel: (expanded: boolean) => void;
+  expandedVitalsPanel: boolean;
+  setExpandedVitalsPanel: (expanded: boolean) => void;
 }
 
 const AssistantUIContext = createContext<AssistantUIState | undefined>(undefined);
@@ -22,6 +24,7 @@ export const AssistantUIProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [showHeartDietEducation, setShowHeartDietEducation] = useState(false);
   const [showExtraCardiologist, setShowExtraCardiologist] = useState(false);
   const [expandedLipidPanel, setExpandedLipidPanel] = useState(false);
+  const [expandedVitalsPanel, setExpandedVitalsPanel] = useState(false);
 
   const showTrendingVitals = useCallback(() => setTrendingVitalsOpen(true), []);
   const closeTrendingVitals = useCallback(() => setTrendingVitalsOpen(false), []);
@@ -38,7 +41,9 @@ export const AssistantUIProvider: React.FC<{ children: React.ReactNode }> = ({ c
       showExtraCardiologist,
       setShowExtraCardiologist,
       expandedLipidPanel,
-      setExpandedLipidPanel
+      setExpandedLipidPanel,
+      expandedVitalsPanel,
+      setExpandedVitalsPanel
     }}>
       {children}
     </AssistantUIContext.Provider>

@@ -92,8 +92,8 @@ export class RealtimeChat {
                   },
                   {
                     type: "function",
-                    name: "expand_lipid_panel", 
-                    description: "Expand the lipid panel to show individual trend charts for each lipid metric over the last year.",
+                    name: "expand_vitals_panel", 
+                    description: "Expand the vitals panel to show individual trend charts for each vital sign over the last year. Call this when user asks to show vitals over the last year, expand vitals, show vital trends, or similar requests about vitals history.",
                     parameters: {
                       type: "object",
                       properties: {},
