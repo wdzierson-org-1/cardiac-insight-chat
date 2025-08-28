@@ -4,12 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, MoreHorizontal } from "lucide-react";
 import { useAssistantUI } from "../assistant-ui-context";
 import doctorFemale from "@/assets/doctor-female.png";
-import doctorMale from "@/assets/doctor-male.png";
+import maleDoctor from "@/assets/Male.png";
 
 export const EnhancedCommunityCardiologistCard = () => {
   const { showExtraCardiologist } = useAssistantUI();
   
-  const doctors = [
+  // Initial doctors - always the same 2 female doctors
+  const initialDoctors = [
     {
       name: "Dr. Asha Menon, MD",
       specialty: "Cardiology",
@@ -28,31 +29,23 @@ export const EnhancedCommunityCardiologistCard = () => {
       img: doctorFemale,
       initials: "LW",
     },
-    {
-      name: "Dr. Michael Hellman, MD",
-      specialty: "Interventional Cardiology",
-      org: "Heart Institute of California",
-      blurb:
-        "Specializes in advanced cardiac procedures and heart failure management with 15+ years experience.",
-      img: doctorMale,
-      initials: "MH",
-    },
   ];
 
-  const extraDoctor = {
-    name: "Dr. Sarah Rodriguez, MD",
-    specialty: "Heart Failure Specialist",
-    org: "Pacific Cardiovascular Center",
+  // Additional doctor that gets added when requested
+  const additionalDoctor = {
+    name: "Dr. Michael Hellman, MD",
+    specialty: "Interventional Cardiology",
+    org: "Heart Institute of California",
     blurb:
-      "Board-certified heart failure specialist with expertise in advanced therapies and device management.",
-    img: doctorFemale,
-    initials: "SR",
+      "Specializes in advanced cardiac procedures and heart failure management with 15+ years experience.",
+    img: maleDoctor,
+    initials: "MH",
   };
 
-  // Replace the last doctor with the extra doctor when showing extra cardiologist
+  // Display the initial 2 doctors, and add the 3rd when requested
   const displayDoctors = showExtraCardiologist 
-    ? [...doctors.slice(0, 2), extraDoctor] 
-    : doctors;
+    ? [...initialDoctors, additionalDoctor] 
+    : initialDoctors;
 
   return (
     <Card className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-4 transition-all duration-500" data-card-title>
