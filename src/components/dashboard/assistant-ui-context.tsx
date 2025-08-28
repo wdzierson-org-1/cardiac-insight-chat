@@ -55,3 +55,8 @@ export const useAssistantUI = () => {
   if (!ctx) throw new Error("useAssistantUI must be used within AssistantUIProvider");
   return ctx;
 };
+
+// Voice assistant helper function to revert vitals panel
+export const revertVitalsPanel = (setExpandedVitalsPanel: (expanded: boolean) => void) => {
+  setExpandedVitalsPanel(false);
+};

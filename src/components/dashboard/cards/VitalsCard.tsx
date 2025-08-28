@@ -5,58 +5,58 @@ import { LineChart, Activity, MoreHorizontal } from "lucide-react";
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { useAssistantUI } from "../assistant-ui-context";
 
-// Sample data for each vital sign
+// Sample data for each vital sign - updated to match medical review image
 const weightData = [
-  { date: "1/25", value: 205 },
-  { date: "2/25", value: 203 },
-  { date: "3/25", value: 202 },
-  { date: "4/25", value: 201 },
-  { date: "5/25", value: 203 },
+  { date: "1/25", value: 188 },
+  { date: "2/25", value: 195 },
+  { date: "3/25", value: 197 },
+  { date: "4/25", value: 195 },
+  { date: "5/25", value: 198 },
   { date: "6/25", value: 202 },
 ];
 
 const bmiData = [
-  { date: "1/25", value: 35 },
-  { date: "2/25", value: 34.5 },
-  { date: "3/25", value: 34.2 },
-  { date: "4/25", value: 34 },
-  { date: "5/25", value: 34.3 },
+  { date: "1/25", value: 24 },
+  { date: "2/25", value: 28 },
+  { date: "3/25", value: 28 },
+  { date: "4/25", value: 27 },
+  { date: "5/25", value: 32 },
   { date: "6/25", value: 34 },
 ];
 
 const spo2Data = [
   { date: "1/25", value: 95 },
-  { date: "2/25", value: 94 },
-  { date: "3/25", value: 93 },
-  { date: "4/25", value: 91 },
-  { date: "5/25", value: 90 },
+  { date: "2/25", value: 95 },
+  { date: "3/25", value: 94 },
+  { date: "4/25", value: 94 },
+  { date: "5/25", value: 92 },
   { date: "6/25", value: 89 },
 ];
 
 const bpmData = [
-  { date: "1/25", value: 118 },
-  { date: "2/25", value: 120 },
-  { date: "3/25", value: 122 },
-  { date: "4/25", value: 119 },
-  { date: "5/25", value: 121 },
+  { date: "1/25", value: 88 },
+  { date: "2/25", value: 88 },
+  { date: "3/25", value: 90 },
+  { date: "4/25", value: 90 },
+  { date: "5/25", value: 115 },
   { date: "6/25", value: 122 },
 ];
 
 const systolicData = [
-  { date: "1/25", value: 168 },
-  { date: "2/25", value: 170 },
-  { date: "3/25", value: 172 },
-  { date: "4/25", value: 169 },
-  { date: "5/25", value: 171 },
+  { date: "1/25", value: 142 },
+  { date: "2/25", value: 158 },
+  { date: "3/25", value: 152 },
+  { date: "4/25", value: 157 },
+  { date: "5/25", value: 165 },
   { date: "6/25", value: 172 },
 ];
 
 const diastolicData = [
-  { date: "1/25", value: 90 },
-  { date: "2/25", value: 92 },
-  { date: "3/25", value: 93 },
-  { date: "4/25", value: 91 },
-  { date: "5/25", value: 92 },
+  { date: "1/25", value: 78 },
+  { date: "2/25", value: 79 },
+  { date: "3/25", value: 83 },
+  { date: "4/25", value: 83 },
+  { date: "5/25", value: 88 },
   { date: "6/25", value: 93 },
 ];
 
@@ -149,7 +149,7 @@ export const VitalsCard = () => {
   const { expandedVitalsPanel } = useAssistantUI();
 
   return (
-    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'w-full max-w-4xl mx-auto' : ''}`} data-card-title>
+    <Card className={`transition-all duration-500 ${expandedVitalsPanel ? 'col-span-full' : ''}`} data-card-title>
       <CardHeader className="rounded-t-2xl bg-[hsl(var(--panel-blue))] text-[hsl(var(--panel-foreground))]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
