@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Mic, Send, ChevronUp, ChevronDown } from "lucide-react";
+import { Mic, Send, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
 import { useAssistantUI } from "./assistant-ui-context";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChat } from "@/utils/RealtimeAudio";
@@ -43,6 +43,9 @@ function mockAssistant(userText: string, ctx: ReturnType<typeof collectScreenCon
 
 export const ChatDock = () => {
   const [open, setOpen] = useState(true);
+  const [position, setPosition] = useState({ x: 16, y: window.innerHeight - 476 }); // bottom-left initially
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Good morning, Dr. Harlow. Upcoming appointment: WARREN MCGINNIS at 10:00 AM. On your dashboard: Diagnoses, Vitals, Lab reports. See Patient Education for resources. Ask me to explain this screen or open trending vitals on demand." },
   ]);
@@ -70,6 +73,7 @@ const [trendMetric, setTrendMetric] = useState<"triglycerides" | "cholesterol" |
 const [trendData, setTrendData] = useState<Array<{ date: string; value: number }>>([]);
 const fnCallBufferRef = useRef<Record<string, string>>({});
 const fnCallNameRef = useRef<Record<string, string>>({});
+const windowRef = useRef<HTMLDivElement>(null);
 const clearRestartTimer = () => {
   if (restartTimerRef.current) {
     clearTimeout(restartTimerRef.current);
@@ -342,20 +346,79 @@ const stopVoice = () => {
   try { audioRef.current?.pause(); } catch {}
   recognizingRef.current = false;
 };
+
+// Drag functionality
+const handleMouseDown = (e: React.MouseEvent) => {
+  if (e.target instanceof HTMLElement && e.target.closest('button, input')) return;
+  setIsDragging(true);
+  const rect = windowRef.current?.getBoundingClientRect();
+  if (rect) {
+    setDragStart({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }
+};
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (!isDragging) return;
+  
+  const newX = e.clientX - dragStart.x;
+  const newY = e.clientY - dragStart.y;
+  
+  // Keep window within viewport bounds
+  const maxX = window.innerWidth - (open ? 380 : 280);
+  const maxY = window.innerHeight - (open ? 460 : 48);
+  
+  setPosition({
+    x: Math.max(0, Math.min(maxX, newX)),
+    y: Math.max(0, Math.min(maxY, newY)),
+  });
+};
+
+const handleMouseUp = () => {
+  setIsDragging(false);
+};
+
+// Add global mouse event listeners for dragging
+useEffect(() => {
+  if (isDragging) {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }
+}, [isDragging, dragStart, open]);
   return (
-    <div className={cn("fixed left-4 bottom-4 z-30 animate-slide-in-left [animation-delay:1.2s] opacity-0 [animation-fill-mode:forwards]")}
-      aria-live="polite" aria-label="Clinical Assistant Dock">
+    <div 
+      ref={windowRef}
+      className={cn("fixed z-30 animate-slide-in-left [animation-delay:1.2s] opacity-0 [animation-fill-mode:forwards]", isDragging && "select-none")}
+      style={{ 
+        left: `${position.x}px`, 
+        top: `${position.y}px`,
+        cursor: isDragging ? 'grabbing' : 'default'
+      }}
+      aria-live="polite" 
+      aria-label="Clinical Assistant Dock"
+    >
       <div className={cn(
         "rounded-2xl border border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bg))] shadow-lg transition-all",
         open ? "w-[350px] sm:w-[380px] h-[460px]" : "w-[280px] h-12",
       )}>
-        <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bubble))]">
+        <div 
+          className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--chat-border))] bg-[hsl(var(--chat-bubble))] cursor-grab active:cursor-grabbing rounded-t-2xl"
+          onMouseDown={handleMouseDown}
+        >
           <div className="flex items-center gap-2">
             <div className={cn(
               "w-3 h-3 rounded-full bg-purple-600 transition-all duration-300",
               !open && speaking && "animate-pulse-opacity"
             )} />
             <span className="font-medium">Journey</span>
+            <GripVertical className="h-3 w-3 text-muted-foreground ml-1" />
           </div>
           <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-label="Toggle chat">
             {open ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
