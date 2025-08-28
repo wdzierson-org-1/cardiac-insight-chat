@@ -27,7 +27,7 @@ export const EnhancedEducationCard = () => {
               <div className="text-xs text-muted-foreground">Practical guidance on reducing swelling and weight gain through sodium and fluid management.</div>
             </label>
           </li>
-          <li className={`flex items-start gap-2 transition-all duration-500 ${showHeartDietEducation ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+          <li className={`flex items-start gap-2 ${showHeartDietEducation ? 'animate-fade-in' : 'opacity-0 invisible'}`}>
             <Checkbox id="edu-3" aria-label="Heart-Healthy Diet" />
             <label htmlFor="edu-3" className="leading-snug">
               <a href="#" className="underline">Heart-Healthy Diet: DASH Diet for Heart Failure</a>

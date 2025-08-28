@@ -71,7 +71,7 @@ export const EnhancedCommunityCardiologistCard = () => {
           <div
             key={i}
             className={
-              "flex items-start gap-4 p-4 " + (i > 0 ? "border-t" : "") + (i === displayDoctors.length - 1 && showExtraCardiologist ? " animate-fade-in" : "")
+              "flex items-start gap-4 p-4 " + (i > 0 ? "border-t" : "") + (i === displayDoctors.length - 1 && showExtraCardiologist ? " animate-fade-in duration-500" : "")
             }
           >
             <Avatar className="h-14 w-14 shadow">
