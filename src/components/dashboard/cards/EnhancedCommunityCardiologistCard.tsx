@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, MoreHorizontal } from "lucide-react";
 import { useAssistantUI } from "../assistant-ui-context";
-import Female from "@/assets/Female.png";
-import Female1 from "@/assets/Female_1.png";
-import Male from "@/assets/Male.jpg";
+import doctorFemale from "@/assets/doctor-female.png";
+import doctorMale from "@/assets/doctor-male.png";
 
 export const EnhancedCommunityCardiologistCard = () => {
   const { showExtraCardiologist } = useAssistantUI();
@@ -17,7 +16,7 @@ export const EnhancedCommunityCardiologistCard = () => {
       org: "Seaside Heart & Vascular",
       blurb:
         "Provides comprehensive cardiac care with a focus on hypertension and lipid disorders.",
-      img: Female,
+      img: doctorFemale,
       initials: "AM",
     },
     {
@@ -26,17 +25,17 @@ export const EnhancedCommunityCardiologistCard = () => {
       org: "Clearview Cardiology Associates",
       blurb:
         "Offers community-based cardiac care with an emphasis on outcomes and follow-up.",
-      img: Female1,
+      img: doctorFemale,
       initials: "LW",
     },
     {
-      name: "Dr. Michael Hellman, MD",
+      name: "Dr. Marcus Chen, MD",
       specialty: "Interventional Cardiology",
       org: "Heart Institute of California",
       blurb:
         "Specializes in advanced cardiac procedures and heart failure management with 15+ years experience.",
-      img: Male,
-      initials: "MH",
+      img: doctorMale,
+      initials: "MC",
     },
   ];
 
@@ -46,7 +45,7 @@ export const EnhancedCommunityCardiologistCard = () => {
     org: "Pacific Cardiovascular Center",
     blurb:
       "Board-certified heart failure specialist with expertise in advanced therapies and device management.",
-    img: Female,
+    img: doctorFemale,
     initials: "SR",
   };
 
